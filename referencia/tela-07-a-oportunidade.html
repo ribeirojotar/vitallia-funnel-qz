@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VITALLIA — Tela 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VITALLIA · Tela 7 de 12 — "A oportunidade"
+   Trabalho: responder a objeção de TIMING ("já passou o momento?")
+   e transformar leitora em selecionada.
+
+   Da referência:
+   · sistema de componentes de "medição" repetido do funil inteiro
+   · três números de denominações diferentes que se corroboram
+   · gráfico de área subindo, com badge de variação flutuante
+   · sobrancelha "INFORMATIVO" enquadrando como dado, não como venda
+
+   Contra a referência:
+   · o gráfico dela mede QUEM VENDE (ganho de aluno). O nosso mede
+     QUEM PROCURA (demanda pública). Zero alegação de renda.
+   · fonte visível e clicável. O número dela não dá pra conferir;
+     o nosso dá — e é por isso que ele é acreditado.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   DADOS — conferir na fonte antes de publicar.
+   Os pontos intermediários da série NÃO devem ser inventados:
+   se você só tem 2022 e 2024, o gráfico mostra 2022 e 2024.
+   ------------------------------------------------------------ */
+</style>
+<style>
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+
+  --bg-1:#0C1A14;--bg-2:#061009;--fg:#EDE4D2;--fg-dim:#A9A392;
+  --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;
+  --slab:#04100A;--slab-bd:rgba(237,228,210,.09);
+  --card:rgba(237,228,210,.045);--card-bd:rgba(237,228,210,.10);
+  --note-bg:rgba(124,148,129,.10);--note-bd:rgba(124,148,129,.30);
+  --halo:rgba(229,160,60,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:radial-gradient(120% 46% at 50% -6%,var(--halo) 0%,transparent 58%),
+             linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
+.stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;
+  mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.thread{position:fixed;top:0;left:0;height:2px;width:58.3%;background:var(--accent);opacity:.55;z-index:9}
+
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 30px) 0 26px}
+
+/* ---- Ponte + seleção ---- */
+.bridge{margin-bottom:24px}
+.bridge .echo{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--fg-dim);opacity:.6}
+.selected{
+  margin-top:13px;padding:15px 17px;border-radius:16px;
+  background:var(--note-bg);border:1px solid var(--note-bd);
+  font-size:14px;line-height:1.55;color:var(--fg)
+}
+.selected b{color:var(--sage);font-weight:700}
+
+.eyebrow{margin-top:26px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:700;color:var(--sage)}
+h1{margin-top:12px;font-family:var(--display);font-weight:800;
+  font-size:clamp(25px,6.5vw,34px);line-height:1.14;letter-spacing:-.028em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{margin-top:13px;font-size:14.5px;line-height:1.55;color:var(--fg-dim);max-width:38ch}
+
+/* ---- Cards de número ---- */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+.stat{background:var(--card);border:1px solid var(--card-bd);border-radius:16px;padding:16px 15px}
+.stat .lab{font-size:9px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;
+  color:var(--sage);line-height:1.5;min-height:2.4em}
+.stat .num{margin-top:9px;font-family:var(--display);font-weight:800;
+  font-size:clamp(24px,6.6vw,31px);letter-spacing:-.035em;line-height:1;color:var(--fg)}
+.stat .delta{margin-top:8px;font-size:11.5px;font-weight:700;color:var(--accent);
+  display:flex;align-items:center;gap:5px}
+.stat .delta svg{width:11px;height:11px}
+
+/* ---- Painel do gráfico ---- */
+.panel{margin-top:10px;background:var(--slab);border:1px solid var(--slab-bd);
+  border-radius:20px;padding:20px 17px 15px}
+.panel .lab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--sage)}
+.panel .sub{margin-top:5px;font-size:11.5px;color:var(--fg-dim)}
+.panel .num{margin-top:12px;font-family:var(--display);font-weight:800;
+  font-size:clamp(30px,8.4vw,40px);letter-spacing:-.035em;line-height:1;color:var(--fg)}
+.panel .num small{font-size:.46em;font-weight:700;letter-spacing:-.01em;color:var(--fg-dim);margin-left:6px}
+
+.chart{position:relative;margin-top:20px}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.line{fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:600;stroke-dashoffset:600;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.chart.on .line{stroke-dashoffset:0}
+.area{fill:url(#grad);opacity:0;transition:opacity .9s ease .5s}
+.chart.on .area{opacity:1}
+.dot{fill:var(--accent);opacity:0;transition:opacity .4s ease 1.3s}
+.chart.on .dot{opacity:1}
+.badge{
+  position:absolute;top:6%;right:2%;
+  padding:6px 12px;border-radius:99px;
+  background:var(--accent);color:var(--accent-ink);
+  font-size:12.5px;font-weight:800;letter-spacing:-.01em;
+  box-shadow:0 4px 14px rgba(229,160,60,.28);
+  opacity:0;transform:scale(.86);transition:opacity .4s ease 1.35s,transform .4s cubic-bezier(.3,1.5,.5,1) 1.35s}
+.chart.on .badge{opacity:1;transform:none}
+.axis{display:flex;justify-content:space-between;margin-top:10px;padding:0 2px}
+.axis span{font-size:10.5px;color:var(--fg-dim);font-weight:600}
+.axis span.now{color:var(--accent)}
+
+.src{margin-top:14px;padding-top:12px;border-top:1px solid var(--slab-bd);
+  font-size:10px;line-height:1.6;color:var(--fg-dim)}
+.src a{color:var(--sage);text-decoration:underline;text-underline-offset:2px}
+
+/* ---- O aviso que faz o número ser acreditado ---- */
+.honest{
+  margin-top:20px;padding:16px 17px;border-radius:16px;
+  border:1px dashed var(--card-bd);background:none;
+  font-size:13.5px;line-height:1.58;color:var(--fg-dim)
+}
+.honest b{color:var(--fg);font-weight:700}
+
+/* ---- CTA ---- */
+.foot{position:sticky;bottom:0;z-index:5;
+  padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
+  background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
+.foot button{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--ui);font-size:16px;font-weight:700;letter-spacing:-.01em;
+  box-shadow:0 6px 24px rgba(229,160,60,.24)}
+.foot svg{width:18px;height:18px}
+.legal{padding:6px 0 calc(env(safe-area-inset-bottom) + 12px);text-align:center;
+  font-size:9.5px;line-height:1.7;color:var(--fg-dim);opacity:.5}
+
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+@media (prefers-reduced-motion:reduce){
+  .line,.area,.dot,.badge{transition:none;stroke-dashoffset:0;opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<i class="thread"></i>
+
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <div class="bridge">
+      <p class="echo">"Falta menos do que parece."</p>
+      <div class="selected">
+        Você passou por <b>seis telas</b> e respondeu as cinco perguntas.
+        A maioria para na segunda. Isso já diz alguma coisa sobre você —
+        e vale dizer uma coisa sobre o momento também.
+      </div>
+    </div>
+
+    <p class="eyebrow">Dados públicos · Ministério da Saúde</p>
+    <h1>A procura existe.<br>E a rede pública <em>não dá conta</em>.</h1>
+    <p class="lede">
+      Práticas integrativas não são modinha de internet. Estão na política nacional
+      desde 2006 e cresceram todo ano desde então.
+    </p>
+
+    <div class="duo">
+      <div class="stat">
+        <p class="lab">Cidades do Brasil que já oferecem</p>
+        <p class="num" data-count="84" data-suffix="%">0%</p>
+        <p class="delta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+          na rede pública
+        </p>
+      </div>
+      <div class="stat">
+        <p class="lab">Atendimentos só pelo SUS em 2024</p>
+        <p class="num" data-count="9" data-suffix=" mi">0</p>
+        <p class="delta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
+          e a fila não anda
+        </p>
+      </div>
+    </div>
+
+    <section class="panel">
+      <p class="lab">Atendimentos com práticas integrativas</p>
+      <p class="sub">Rede pública · 2022 a 2024</p>
+      <p class="num">+70<small>% em dois anos</small></p>
+
+      <div class="chart" id="chart">
+        <span class="badge">+70%</span>
+        <svg viewBox="0 0 300 120" preserveAspectRatio="none" aria-label="Crescimento dos atendimentos entre 2022 e 2024">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#E5A03C" stop-opacity=".38"/>
+              <stop offset="100%" stop-color="#E5A03C" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <!-- Dois pontos medidos, ligados em reta. Nenhum ponto
+               intermediário inventado para deixar a curva bonita. -->
+          <path class="area" d="M10,78 L290,20 L290,120 L10,120 Z"/>
+          <path class="line" d="M10,78 L290,20"/>
+          <circle class="dot" cx="10" cy="78" r="4.5"/>
+          <circle class="dot" cx="290" cy="20" r="5.5"/>
+        </svg>
+        <div class="axis"><span>2022</span><span class="now">2024</span></div>
+      </div>
+
+      <p class="src">
+        Fontes: Política Nacional de Práticas Integrativas e Complementares (PNPIC) e
+        dados de atendimento do Ministério da Saúde, 2024 ·
+        <a href="#" id="src">ver a fonte</a><br>
+        A VITALLIA é curso livre particular e não tem vínculo com o Ministério da Saúde,
+        com a Anvisa ou com o SUS.
+      </p>
+    </section>
+
+    <p class="honest">
+      Agora o que esses números <b>não</b> dizem: eles não prometem que você vai ganhar
+      dinheiro com isso. Não existe número aqui sobre faturamento de aluno, e não vai
+      existir. <b>Isso mede a procura, não o seu resultado.</b>
+      Conseguir cliente depende da sua cidade e do seu esforço — o que dá pra dizer
+      é que tem gente procurando.
+    </p>
+
+  </main>
+
+  <div class="wrap foot">
+    <button id="advance">
+      Quero a segunda cena
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+    <p class="legal">
+      VITALLIA é curso livre de capacitação (Lei 9.394/96 · Decreto 5.154/2004).
+      Não dá registro em conselho. Conteúdo educativo, não substitui consulta médica.
+    </p>
+  </div>
+</div>
+
+<script>
+const VT=(()=>{
+  const KEY='vt_session',ENDPOINT=null;
+  let s=localStorage.getItem(KEY);
+  if(!s){s=(crypto.randomUUID?.()||Date.now()+Math.random().toString(36).slice(2));localStorage.setItem(KEY,s);}
+  const t0=performance.now();
+  function track(e,p={}){
+    const d={event:e,session_id:s,ts:new Date().toISOString(),
+             dwell_ms:Math.round(performance.now()-t0),...p};
+    console.log('%c VT ','background:#E5A03C;color:#0C1A14;font-weight:700',e,d);
+    (window.dataLayer=window.dataLayer||[]).push(d);
+    window.posthog?.capture(e,d);
+    if(ENDPOINT) navigator.sendBeacon?.(ENDPOINT,JSON.stringify(d));
+  }
+  return {track,sid:s};
+})();
+
+const sim=JSON.parse(localStorage.getItem('vt_sim')||'{}');
+const STEP={step:7,step_name:'a_oportunidade'};
+VT.track('step_view',{...STEP,plan:sim.plan||null});
+
+let advanced=false, sawChart=false;
+
+/* contagem dos números */
+function count(el){
+  const to=+el.dataset.count, sfx=el.dataset.suffix||'', dur=900, t0=performance.now();
+  (function step(now){
+    const k=Math.min(1,(now-t0)/dur);
+    el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+sfx;
+    if(k<1) requestAnimationFrame(step);
+  })(t0);
+}
+
+const chart=document.getElementById('chart');
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(!e.isIntersecting) return;
+    if(e.target===chart){
+      chart.classList.add('on');
+      if(!sawChart){ sawChart=true; VT.track('chart_seen',STEP); }
+    } else count(e.target);
+    io.unobserve(e.target);
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>io.observe(el));
+io.observe(chart);
+
+/* Clicar na fonte é o melhor sinal de confiança do funil:
+   é alguém checando em vez de acreditando. Se a taxa for alta,
+   o posicionamento de honestidade está funcionando. */
+document.getElementById('src').addEventListener('click',e=>{
+  e.preventDefault();
+  VT.track('source_click',STEP);
+  // window.open('URL_DA_FONTE','_blank','noopener');
+});
+
+function reportExit(){
+  if(advanced) return;
+  VT.track('step_exit',{...STEP,saw_chart:sawChart});
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')reportExit();});
+window.addEventListener('pagehide',reportExit);
+
+document.getElementById('advance').addEventListener('click',()=>{
+  if(advanced)return;
+  advanced=true;
+  VT.track('step_advance',{...STEP,saw_chart:sawChart});
+  document.getElementById('stage').classList.add('leaving');
+  setTimeout(()=>{
+    // window.location.href = `/8?s=${VT.sid}`;
+    console.log('→ Tela 8 (As duas cenas).');
+  },420);
+});
+</script>
+
+<!--
+  O GRÁFICO TEM DOIS PONTOS, E É DE PROPÓSITO.
+  Você tem 2022 e 2024 com fonte. A curva sinuosa da referência
+  precisa de valores mensais que nós não temos — desenhar uma curva
+  bonita interpolando dados inexistentes é inventar dado com aparência
+  de estatística, que é a forma menos defensável de exagero.
+  Se você levantar a série ano a ano na fonte, troque o path por um
+  polyline com os valores reais. Aí a curva é permitida.
+
+  ANTES DE PUBLICAR, CONFIRME NA FONTE:
+  · 84% das cidades — número e ano
+  · 9 milhões de atendimentos — ano de referência
+  · +70% — período exato (2022→2024) e base de cálculo
+  E troque o href de #src pelo link direto do documento, não pela
+  home do ministério. Fonte que não abre no lugar certo vira o
+  oposto de prova.
+
+  O PARÁGRAFO TRACEJADO NÃO SAI.
+  "Isso mede a procura, não o seu resultado" é o que torna os três
+  números acreditáveis. Numa página de renda extra, quem limita a
+  própria promessa ganha mais crédito do que quem a aumenta.
+-->
+</body>
+</html>

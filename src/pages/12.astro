@@ -1,0 +1,405 @@
+---
+import FunnelLayout from '../layouts/FunnelLayout.astro';
+import { tela12 } from '../config/funnel';
+
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
+---
+
+<FunnelLayout title={tela12.title} fontHref={FONT_HREF}>
+<style is:global>
+/* ============================================================
+   VITALLIA · Tela 12 de 12 — "A decisão"
+   Trabalho: converter. Escolha binária por IDENTIDADE.
+
+   Fecha o circuito que a simulação abriu:
+   · vt_sim.plan  → destaca o card que ela mesma escolheu no turno 5
+   · vt_cond.code → vai no link do checkout e aparece na faixa
+   · vt_cond.expira_em → relógio real, contado do resgate dela
+
+   Regras desta tela:
+   · a fronteira é de IDENTIDADE, não de quantidade. "2 cursos vs 6"
+     convida a comparar preço por unidade; "cuidar da minha casa vs
+     atender outra pessoa" convida a perguntar quem ela é — e ninguém
+     escolhe ser menos.
+   · o card básico DIZ o que não inclui. É honesto e é exatamente o
+     que faz a pessoa certa subir de plano.
+   · duas objeções, coladas ao preço. Não uma parede de FAQ: objeção
+     respondida longe do seu momento é objeção plantada.
+   · garantia em uma linha, corpo pequeno, abaixo dos cards. Selo
+     gigante em produto barato sinaliza dúvida do vendedor.
+   · nenhuma informação nova. Argumento novo aqui cria objeção nova,
+     e não há mais tela para respondê-la.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+
+  --paper:#EFEADD;
+  --paper-2:#F7F3E9;
+  --ink:#16241D;
+  --ink-dim:#5E6B60;
+  --card:#FFFFFF;
+  --card-bd:#E2DCCC;
+  --green:#2E7D52;
+  --amber:#B8802A;
+  --amber-bg:#FBF1DC;
+  --amber-bd:#E2C489;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:linear-gradient(178deg,var(--paper-2) 0%,var(--paper) 46%)}
+.thread{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--amber);opacity:.6;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 22px) 0 26px}
+
+/* ---- faixa da condição ---- */
+.strip{display:none;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 14px;border-radius:13px;
+  background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber);
+  font-size:12px;font-weight:700}
+.strip.on{display:flex}
+.strip .code{padding:3px 9px;border-radius:6px;background:rgba(184,128,42,.14);
+  letter-spacing:.16em;font-size:10.5px}
+.strip .clock{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.strip svg{width:12px;height:12px}
+
+h1{margin-top:22px;font-family:var(--display);font-weight:800;
+  font-size:clamp(27px,7vw,36px);line-height:1.1;letter-spacing:-.032em}
+h1 em{font-style:normal;color:var(--amber)}
+.lede{margin-top:11px;font-size:14.5px;line-height:1.55;color:var(--ink-dim);max-width:36ch}
+
+/* ---- planos ---- */
+.plans{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.plan{background:var(--card);border:1px solid var(--card-bd);border-radius:20px;
+  padding:20px 18px;position:relative}
+.plan.pick{border-color:var(--green);border-width:2px;padding:19px 17px;
+  box-shadow:0 8px 26px rgba(46,125,82,.14)}
+.plan .badge{position:absolute;top:-10px;left:18px;padding:4px 11px;border-radius:99px;
+  background:var(--green);color:#fff;font-size:10px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;display:none}
+.plan.pick .badge{display:block}
+.plan .who{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--ink-dim)}
+.plan h2{margin-top:7px;font-family:var(--display);font-weight:800;
+  font-size:21px;line-height:1.2;letter-spacing:-.026em}
+.plan .price{margin-top:13px;display:flex;align-items:baseline;gap:9px}
+.plan .price .now{font-family:var(--display);font-weight:800;font-size:38px;
+  letter-spacing:-.04em;line-height:1}
+.plan .price .was{font-size:14px;color:var(--ink-dim);text-decoration:line-through;display:none}
+.plan .price .once{font-size:11.5px;color:var(--ink-dim);font-weight:600}
+.plan ul{margin-top:15px;display:flex;flex-direction:column;gap:8px}
+.plan li{list-style:none;display:flex;gap:9px;align-items:flex-start;
+  font-size:13.5px;line-height:1.45}
+.plan li svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--green)}
+.plan li.no{color:var(--ink-dim)}
+.plan li.no svg{color:#C08B7C}
+.plan button{margin-top:17px;width:100%;height:56px;border:0;border-radius:28px;cursor:pointer;
+  font-family:var(--ui);font-size:15.5px;font-weight:800;letter-spacing:-.01em;
+  background:var(--card-bd);color:var(--ink)}
+.plan.pick button{background:var(--green);color:#fff;box-shadow:0 6px 20px rgba(46,125,82,.26)}
+.plan .pay{margin-top:9px;text-align:center;font-size:11px;color:var(--ink-dim)}
+
+/* ---- objeções coladas ao preço ---- */
+.obj{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.obj div{padding:15px 16px;border-radius:15px;background:var(--card);border:1px solid var(--card-bd)}
+.obj h4{font-size:14px;font-weight:800;letter-spacing:-.012em}
+.obj p{margin-top:6px;font-size:13px;line-height:1.52;color:var(--ink-dim)}
+
+/* ---- selos: reduzem risco no segundo do clique ---- */
+.badges{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.badges div{background:var(--card);border:1px solid var(--card-bd);border-radius:14px;
+  padding:14px 8px;text-align:center}
+.badges .ic{width:30px;height:30px;margin:0 auto 8px;border-radius:9px;
+  background:rgba(46,125,82,.10);color:var(--green);
+  display:flex;align-items:center;justify-content:center}
+.badges svg{width:15px;height:15px}
+.badges p{font-size:10px;line-height:1.35;font-weight:800;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--ink-dim)}
+
+.warranty{margin-top:18px;padding:16px 17px;border-radius:16px;
+  background:var(--card);border:1px solid var(--card-bd);
+  display:flex;gap:13px;align-items:flex-start}
+.warranty .ic{flex:none;width:32px;height:32px;border-radius:10px;
+  background:rgba(46,125,82,.10);color:var(--green);
+  display:flex;align-items:center;justify-content:center}
+.warranty .ic svg{width:17px;height:17px}
+.warranty h4{font-size:14px;font-weight:800;letter-spacing:-.012em}
+.warranty p{margin-top:5px;font-size:12.5px;line-height:1.52;color:var(--ink-dim)}
+.warranty b{color:var(--ink);font-weight:700}
+
+/* ---- FAQ curto, colado ao botão ---- */
+.faq{margin-top:18px;border-radius:16px;overflow:hidden;
+  background:var(--card);border:1px solid var(--card-bd)}
+.faq details{border-top:1px solid var(--card-bd)}
+.faq details:first-child{border-top:0}
+.faq summary{padding:15px 16px;cursor:pointer;list-style:none;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:19px;font-weight:600;color:var(--ink-dim);
+  line-height:1;transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq .a{padding:0 16px 15px;font-size:13px;line-height:1.55;color:var(--ink-dim)}
+
+.help{margin-top:12px;display:none;align-items:center;justify-content:center;gap:9px;
+  width:100%;height:50px;border-radius:25px;text-decoration:none;
+  background:var(--card);border:1px solid var(--card-bd);color:var(--ink);
+  font-size:13.5px;font-weight:700}
+.help.on{display:flex}
+.help svg{width:16px;height:16px;color:var(--green)}
+
+.fine{padding:20px 0 calc(env(safe-area-inset-bottom) + 20px);text-align:center;
+  font-size:9.5px;line-height:1.75;color:var(--ink-dim);opacity:.75}
+</style>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <div class="strip" id="strip">
+      <span>{tela12.strip.label} <span class="code" id="code"></span></span>
+      <span class="clock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span id="clock"></span>
+      </span>
+    </div>
+
+    <h1 id="title" set:html={tela12.titleDefault} />
+    <p class="lede" id="lede">{tela12.ledeDefault}</p>
+
+    <div class="plans">
+
+      <article class="plan" id="p-basico">
+        <span class="badge">{tela12.plans.basico.badge}</span>
+        <p class="who">{tela12.plans.basico.who}</p>
+        <h2>{tela12.plans.basico.heading}</h2>
+        <div class="price">
+          <span class="now">{tela12.plans.basico.priceNow}</span>
+          <span class="was" id="was-b">{tela12.plans.basico.priceWas}</span>
+          <span class="once">{tela12.plans.basico.priceOnce}</span>
+        </div>
+        <ul>
+          {tela12.plans.basico.includes.map(i => (
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>
+          ))}
+          {tela12.plans.basico.excludes.map(i => (
+            <li class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> {i}</li>
+          ))}
+        </ul>
+        <button data-plan="basico">{tela12.plans.basico.button}</button>
+        <p class="pay">{tela12.plans.basico.pay}</p>
+      </article>
+
+      <article class="plan" id="p-completo">
+        <span class="badge">{tela12.plans.completo.badge}</span>
+        <p class="who">{tela12.plans.completo.who}</p>
+        <h2>{tela12.plans.completo.heading}</h2>
+        <div class="price">
+          <span class="now">{tela12.plans.completo.priceNow}</span>
+          <span class="was" id="was-c">{tela12.plans.completo.priceWas}</span>
+          <span class="once">{tela12.plans.completo.priceOnce}</span>
+        </div>
+        <ul>
+          {tela12.plans.completo.includes.map(i => (
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>
+          ))}
+        </ul>
+        <button data-plan="completo">{tela12.plans.completo.button}</button>
+        <p class="pay" id="pay-c">{tela12.plans.completo.pay}</p>
+      </article>
+
+    </div>
+
+    <div class="obj">
+      {tela12.objections.map(o => (
+        <div>
+          <h4>{o.h4}</h4>
+          <p>{o.p}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="badges">
+      <div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H12l-1 9 8.5-11H13z"/></svg></span>
+        <p set:html={tela12.badges[0].p} />
+      </div>
+      <div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 018 0v3.5"/></svg></span>
+        <p set:html={tela12.badges[1].p} />
+      </div>
+      <div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 10-16 0"/><path d="M3 15.5V13a1.5 1.5 0 013 0v2.5a1.5 1.5 0 01-3 0zM18 15.5V13a1.5 1.5 0 013 0v2.5a1.5 1.5 0 01-3 0z"/></svg></span>
+        <p set:html={tela12.badges[2].p} />
+      </div>
+    </div>
+
+    <div class="warranty">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 4.4-3.1 8.4-7.5 10-4.4-1.6-7.5-5.6-7.5-10v-6z"/><path d="M9 12l2 2 4-4.5"/></svg></span>
+      <div>
+        <h4>{tela12.warranty.h4}</h4>
+        <p set:html={tela12.warranty.p} />
+      </div>
+    </div>
+
+    <div class="faq">
+      {tela12.faq.map(item => (
+        <details>
+          <summary>{item.q}</summary>
+          <p class="a">{item.a}</p>
+        </details>
+      ))}
+    </div>
+
+    <a class="help" id="help" href="#" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1121 11.5z"/></svg>
+      {tela12.help}
+    </a>
+
+    <p class="fine" set:html={tela12.fine} />
+
+  </main>
+</div>
+
+<script>
+import { VT } from '../lib/track';
+import { tela12 } from '../config/funnel';
+
+/* ============================================================
+   CONFIG — a mesma das telas 9 e 10
+   ============================================================ */
+const CONDICAO = tela12.condicao;
+const CHECKOUT = tela12.checkout;
+
+/* Parcelamento: só preencha com o que a Hotmart REALMENTE oferece
+   no seu produto, já com juros. null = a linha não aparece. */
+const PARCELA: string | null = tela12.parcela;
+
+/* Canal de atendimento: só preencha se existir alguém respondendo.
+   Botão de contato sem resposta do outro lado custa mais caro que
+   não ter botão nenhum. null = não aparece. */
+const CONTATO: string | null = tela12.contato;
+
+const sim = JSON.parse(localStorage.getItem('vt_sim') || '{}');
+const cond = JSON.parse(localStorage.getItem('vt_cond') || '{}');
+
+const STEP = { step: 12, step_name: 'a_decisao' };
+VT.track('step_view', { ...STEP, plan: sim.plan || null, code: cond.code || null, condicao: CONDICAO });
+
+/* ---- roteamento: ela já escolheu no turno 5 ---- */
+const rota = sim.plan === 'completo' ? 'completo'
+           : sim.plan === 'basico' ? 'basico'
+           : 'completo'; /* indefinido ou sem simulação: mostra o completo em destaque */
+
+document.getElementById('p-' + rota)!.classList.add('pick');
+
+if (sim.plan === 'basico') {
+  document.getElementById('title')!.innerHTML = tela12.titleByPlan.basico;
+  document.getElementById('lede')!.textContent = tela12.ledeByPlan.basico;
+} else if (sim.plan === 'completo') {
+  document.getElementById('title')!.innerHTML = tela12.titleByPlan.completo;
+  document.getElementById('lede')!.textContent = tela12.ledeByPlan.completo;
+}
+
+/* ---- condição ---- */
+if (CONDICAO === 'desconto' && cond.code) {
+  (document.getElementById('was-b') as HTMLElement).style.display = 'inline';
+  (document.getElementById('was-c') as HTMLElement).style.display = 'inline';
+}
+if (cond.code) {
+  document.getElementById('code')!.textContent = cond.code;
+  document.getElementById('strip')!.classList.add('on');
+  if (cond.expira_em) relogio(new Date(cond.expira_em).getTime());
+}
+
+function relogio(ate: number) {
+  const el = document.getElementById('clock')!;
+  (function t() {
+    const d = ate - Date.now();
+    if (d <= 0) { el.textContent = 'expirada'; return; }
+    const h = Math.floor(d / 3.6e6), m = Math.floor(d % 3.6e6 / 6e4), s = Math.floor(d % 6e4 / 1000);
+    el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    setTimeout(t, 1000);
+  })();
+}
+
+/* ---- parcelamento e contato, só se existirem de verdade ---- */
+if (PARCELA) document.getElementById('pay-c')!.textContent = PARCELA + ' · acesso na hora';
+if (CONTATO) {
+  const h = document.getElementById('help') as HTMLAnchorElement;
+  h.href = CONTATO; h.target = '_blank'; h.classList.add('on');
+  h.addEventListener('click', () => VT.track('contato_click', STEP));
+}
+
+/* Qual pergunta ela abre é a objeção viva no segundo do clique.
+   É o dado mais acionável desta tela depois do seguiu_rota. */
+document.querySelectorAll('.faq details').forEach((d, i) => {
+  d.addEventListener('toggle', () => {
+    if ((d as HTMLDetailsElement).open) VT.track('faq_open', {
+      ...STEP, pergunta: i + 1,
+      texto: d.querySelector('summary')!.textContent,
+    });
+  });
+});
+
+/* ---- checkout ---- */
+document.querySelectorAll('.plan button').forEach(b => {
+  b.addEventListener('click', () => {
+    const plano = (b as HTMLElement).dataset.plan!;
+    VT.track('checkout_click', {
+      ...STEP,
+      plano,
+      rota_sugerida: rota,
+      seguiu_rota: plano === rota,
+      code: cond.code || null,
+    });
+
+    const u = new URL(CHECKOUT[plano as 'basico' | 'completo']);
+    u.searchParams.set('sck', VT.sid);
+    if (cond.code) u.searchParams.set('off', cond.code);
+    console.log('→ checkout:', u.toString());
+    // window.location.href=u.toString();
+  });
+});
+
+function reportExit() { VT.track('step_exit', { ...STEP, plan: sim.plan || null, code: cond.code || null }); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
+window.addEventListener('pagehide', reportExit);
+</script>
+
+{/*
+  O QUE FALTA DO SEU LADO PARA ESTA TELA FUNCIONAR
+
+  1. Os dois links da Hotmart em CHECKOUT.
+  2. O cupom: o parâmetro 'off' precisa existir na Hotmart com o código
+     gerado na tela 10. Se não existir, ela chega no checkout, vê o
+     preço cheio, e a tela 10 vira encenação — que é o pior desfecho
+     possível pro funil inteiro.
+  3. ORDER BUMP no checkout. Não existe hoje e é a maior lacuna
+     financeira da operação: com ticket de R$ 9,90 e CAC de Meta, a
+     conta só fecha no AOV. O bump óbvio é o Kit Primeiro Cliente
+     isolado (R$ 17 a 27) no checkout do Básico — resolve a objeção
+     residual de quem escolheu o plano pessoal mas ficou curiosa sobre
+     cobrar, e converte a canibalização em receita em vez de brigar
+     com ela.
+
+  A MÉTRICA QUE IMPORTA AQUI
+  'seguiu_rota' no checkout_click. Ela responde se a simulação está
+  fazendo trabalho comercial ou só entretenimento:
+  · alta e com plano completo → o turno 5 está roteando de verdade
+  · alta mas quase todo mundo em 'basico' → a fronteira de identidade
+    não está clara o bastante nos cards
+  · baixa → ela ignora a sugestão, e aí o roteamento é decoração:
+    tire o destaque e simplifique
+
+  O QUE NÃO ENTRA NESTA TELA
+  Nenhum argumento novo. Nenhum bônus surpresa, nenhum depoimento
+  inédito, nenhuma estatística. Argumento novo no fechamento cria
+  objeção nova, e não há mais tela para respondê-la.
+
+  SE O PREÇO RISCADO ESTIVER VISÍVEL (CONDICAO='desconto')
+  R$ 19,90 e R$ 67 precisam ter sido praticados de verdade na página
+  avulsa por no mínimo 30 dias, e mantidos depois. Caso contrário
+  mantenha 'material': os riscados somem e a tela continua honesta.
+*/}
+</FunnelLayout>

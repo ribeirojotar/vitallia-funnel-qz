@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VITALLIA — Tela 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VITALLIA · Tela 4 de 12 — "Por que você travou"
+   Trabalho: ABSOLVIÇÃO + posicionar o mecanismo por contraste.
+   É a tela mais importante do funil.
+
+   Da referência:
+   · abertura que retoma a tela anterior (encadeamento por referência)
+   · comparação como ACORDEÃO: alternativas recolhidas, mecanismo aberto
+   · atributos em slots paralelos, mesma quantidade por linha
+   · caixa de alerta pegando a objeção que a comparação cria
+   Contra a referência:
+   · os três abrem. Ele mantém os inimigos fechados porque o conteúdo
+     deles não sobrevive à leitura. O nosso sobrevive.
+   · zero adjetivo acusatório. Só atributo verificável.
+   ============================================================ */
+
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+}
+[data-theme="dark"]{
+  --bg-1:#0C1A14;--bg-2:#061009;--fg:#EDE4D2;--fg-dim:#A9A392;
+  --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;
+  --slab:#04100A;--slab-bd:rgba(237,228,210,.10);
+  --row:rgba(237,228,210,.05);--row-bd:rgba(237,228,210,.09);
+  --row-fg:#8E897B;
+  --note-bg:rgba(229,160,60,.09);--note-bd:rgba(229,160,60,.30);--note-fg:#F0BE72;
+  --halo:rgba(229,160,60,.16);--grain:.30;
+}
+[data-theme="light"]{
+  --bg-1:#FBFAF6;--bg-2:#F2EFE6;--fg:#14261D;--fg-dim:#5E6B60;
+  --accent:#9A6212;--accent-ink:#FFF;--sage:#5E7A64;
+  --slab:#14261D;--slab-bd:transparent;
+  --row:rgba(255,255,255,.07);--row-bd:rgba(255,255,255,.11);
+  --row-fg:#8D9A8F;
+  --note-bg:#FDF5E4;--note-bd:#E3C388;--note-fg:#8A5A10;
+  --halo:rgba(154,98,18,.06);--grain:.10;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:radial-gradient(120% 50% at 50% -8%,var(--halo) 0%,transparent 60%),
+             linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
+.stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--grain);
+  mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+
+.thread{position:fixed;top:0;left:0;height:2px;width:33.3%;background:var(--accent);opacity:.55;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 32px) 0 28px}
+
+/* ---- Ponte: retoma a pergunta com que a tela 3 terminou ---- */
+.bridge{text-align:center;margin-bottom:26px}
+.bridge .echo{
+  font-family:var(--serif);font-style:italic;font-size:19px;
+  color:var(--fg-dim);opacity:.62
+}
+.bridge .answer{
+  display:block;margin-top:12px;
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(24px,6.5vw,33px);line-height:1.16;letter-spacing:-.028em
+}
+.bridge .answer em{font-style:normal;color:var(--accent)}
+
+/* ---- Acordeão comparativo ---- */
+.panel{background:var(--slab);border:1px solid var(--slab-bd);border-radius:22px;padding:16px 14px}
+[data-theme="light"] .panel{color:#F2EFE6}
+.panel > .cap{
+  font-size:9.5px;letter-spacing:.19em;text-transform:uppercase;font-weight:600;
+  color:var(--sage);padding:4px 6px 14px
+}
+
+.row{border-radius:16px;margin-bottom:9px;overflow:hidden;
+  background:var(--row);border:1px solid var(--row-bd)}
+.row:last-child{margin-bottom:0}
+.row.is-core{background:var(--accent);border-color:var(--accent)}
+
+.head{
+  width:100%;display:flex;align-items:center;gap:13px;
+  padding:15px 14px;background:none;border:0;cursor:pointer;text-align:left;
+  font-family:var(--ui);color:inherit
+}
+.head:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.badge{
+  flex:none;width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.28);color:var(--row-fg)
+}
+.is-core .badge{background:rgba(0,0,0,.20);color:var(--accent-ink)}
+.badge svg{width:15px;height:15px}
+.titles{flex:1;min-width:0}
+.titles h3{font-size:16px;font-weight:700;letter-spacing:-.015em;color:var(--row-fg)}
+.is-core .titles h3{color:var(--accent-ink)}
+.titles p{margin-top:3px;font-size:11px;line-height:1.45;color:var(--row-fg);opacity:.78}
+.is-core .titles p{color:var(--accent-ink);opacity:.72}
+.chev{flex:none;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;background:rgba(0,0,0,.28);color:var(--row-fg);transition:transform .28s ease}
+.is-core .chev{background:rgba(0,0,0,.20);color:var(--accent-ink)}
+.head[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.chev svg{width:14px;height:14px}
+
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s ease}
+.head[aria-expanded="true"] + .body{grid-template-rows:1fr}
+.body > div{overflow:hidden}
+.body ul{list-style:none;padding:0 15px 16px 59px}
+.body li{font-size:13px;line-height:1.5;color:var(--row-fg);padding:5px 0;
+  border-top:1px solid rgba(255,255,255,.06)}
+.body li:first-child{border-top:0}
+.is-core .body li{color:var(--accent-ink);border-color:rgba(0,0,0,.12)}
+.is-core .body li b{font-weight:700}
+
+/* ---- Caixa que pega o bumerangue do inimigo ---- */
+.note{
+  margin-top:22px;padding:16px 17px;border-radius:16px;
+  background:var(--note-bg);border:1px solid var(--note-bd);color:var(--note-fg)
+}
+.note .tag{
+  display:inline-block;padding:4px 10px;border-radius:99px;margin-bottom:10px;
+  background:var(--note-bd);color:var(--bg-1);
+  font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase
+}
+[data-theme="light"] .note .tag{color:#FFF;background:#B8873A}
+.note p{font-size:13.5px;line-height:1.55;font-weight:500}
+.note p + p{margin-top:9px}
+.note b{font-weight:700}
+
+/* ---- CTA ---- */
+.foot{position:sticky;bottom:0;z-index:5;
+  padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
+  background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
+.foot button{
+  width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--ui);font-size:16px;font-weight:700;letter-spacing:-.01em;
+  box-shadow:0 6px 24px rgba(229,160,60,.24)
+}
+.foot button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.foot svg{width:18px;height:18px}
+
+.legal{padding:6px 0 calc(env(safe-area-inset-bottom) + 14px);text-align:center;
+  font-size:9.5px;line-height:1.7;color:var(--fg-dim);opacity:.55}
+
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+@media (prefers-reduced-motion:reduce){.body,.chev{transition:none}}
+
+.theme{position:fixed;top:9px;right:9px;z-index:10;font-size:10px;letter-spacing:.1em;
+  text-transform:uppercase;padding:5px 10px;border-radius:99px;cursor:pointer;
+  background:var(--row);border:1px solid var(--row-bd);color:var(--fg-dim);font-family:var(--ui)}
+</style>
+</head>
+<body>
+
+<button class="theme" id="theme">tema</button>
+<i class="thread"></i>
+
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <div class="bridge">
+      <p class="echo">"Então o que é?"</p>
+      <span class="answer">É a <em>ordem</em>.<br>E ninguém te contou qual é.</span>
+    </div>
+
+    <section class="panel">
+      <p class="cap">Três formas de aprender · três resultados</p>
+
+      <!-- Inimigo 1 -->
+      <article class="row">
+        <button class="head" aria-expanded="false" data-key="gratis">
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+          <span class="titles">
+            <h3>Vídeo e PDF de graça</h3>
+            <p>Ensina a planta · Não ensina a checagem · Sem ordem</p>
+          </span>
+          <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="body"><div><ul>
+          <li>Te dá o que a planta faz. É a camada mais fácil de produzir e a que mais aparece.</li>
+          <li>Contraindicação e interação com remédio contínuo quase nunca entram — não é conteúdo que viraliza.</li>
+          <li>Cada vídeo começa do zero. Você acumula assunto, não caminho.</li>
+          <li><b>Quando alguém senta na sua frente:</b> você trava.</li>
+        </ul></div></div>
+      </article>
+
+      <!-- Mecanismo -->
+      <article class="row is-core">
+        <button class="head" aria-expanded="true" data-key="ordem">
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M4 12h16M4 18h7"/></svg></span>
+          <span class="titles">
+            <h3>Método da Primeira Ficha</h3>
+            <p>Da queixa à ficha · Ensina o que não usar · Termina no atendimento</p>
+          </span>
+          <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="body"><div><ul>
+          <li>Você aprende na ordem em que a decisão acontece, não por assunto.</li>
+          <li>Primeiro o que perguntar. Depois o que checar. Só então o que indicar.</li>
+          <li>Termina onde os outros nem chegam: ficha preenchida e valor definido.</li>
+          <li><b>Quando alguém senta na sua frente: você abre a ficha.</b></li>
+        </ul></div></div>
+      </article>
+
+      <!-- Inimigo 2 -->
+      <article class="row">
+        <button class="head" aria-expanded="false" data-key="formacao">
+          <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></span>
+          <span class="titles">
+            <h3>Formação de R$ 1.800 a R$ 3.000</h3>
+            <p>12 a 24 meses · Muita teoria · O mesmo certificado</p>
+          </span>
+          <span class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </button>
+        <div class="body"><div><ul>
+          <li>Conteúdo geralmente bom. O problema não é qualidade.</li>
+          <li>Emite certificado de conclusão de curso livre, previsto na LDB — o mesmo tipo que este aqui emite.</li>
+          <li>Não dá registro em conselho, porque não existe conselho pra essa área. Nenhum curso dá.</li>
+          <li><b>Quando alguém senta na sua frente:</b> você sabe muito e ainda trava, se ninguém te ensinou a conduzir.</li>
+        </ul></div></div>
+      </article>
+    </section>
+
+    <!-- pega a objeção que a comparação acabou de criar -->
+    <aside class="note">
+      <span class="tag">Antes que você pergunte</span>
+      <p>"Então nenhum certificado vale nada — nem o de vocês?"</p>
+      <p>Vale, e vale exatamente o que é: <b>certificado de conclusão de curso livre</b>, previsto na LDB. É esse documento que sustenta a atuação de terapeutas naturais no Brasil inteiro, com carga horária discriminada e validação.</p>
+      <p>O que não existe pra ninguém é registro profissional e selo do MEC. <b>Quem te prometer isso está mentindo</b> — e agora você sabe reconhecer.</p>
+    </aside>
+  </main>
+
+  <div class="wrap foot">
+    <button id="advance">
+      Ver na prática
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+    <p class="legal">
+      VITALLIA é curso livre de capacitação (Lei 9.394/96 · Decreto 5.154/2004).
+      Não é graduação, técnico ou pós, e não dá registro em conselho.
+      Sem vínculo com MEC, Anvisa, SUS ou Ministério da Saúde.
+    </p>
+  </div>
+</div>
+
+<script>
+const VT=(()=>{
+  const KEY='vt_session',ENDPOINT=null;
+  let s=localStorage.getItem(KEY);
+  if(!s){s=(crypto.randomUUID?.()||Date.now()+Math.random().toString(36).slice(2));localStorage.setItem(KEY,s);}
+  const t0=performance.now();
+  function track(e,p={}){
+    const d={event:e,session_id:s,ts:new Date().toISOString(),
+             dwell_ms:Math.round(performance.now()-t0),
+             variant:document.documentElement.dataset.theme,...p};
+    console.log('%c VT ','background:#E5A03C;color:#0C1A14;font-weight:700',e,d);
+    (window.dataLayer=window.dataLayer||[]).push(d);
+    window.posthog?.capture(e,d);
+    if(ENDPOINT) navigator.sendBeacon?.(ENDPOINT,JSON.stringify(d));
+  }
+  return {track,sid:s};
+})();
+
+const STEP={step:4,step_name:'por_que_voce_travou'};
+VT.track('step_view',STEP);
+
+let advanced=false;
+const opened=new Set(['ordem']);
+
+/* Qual inimigo ela abriu é diagnóstico direto:
+   abrir "formacao" = ainda está considerando gastar R$ 3.000.
+   Objeção viva. Se muita gente abre, o card precisa de mais peso. */
+document.querySelectorAll('.head').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const open = btn.getAttribute('aria-expanded')==='true';
+    btn.setAttribute('aria-expanded', String(!open));
+    const key = btn.dataset.key;
+    if(!open && !opened.has(key)){
+      opened.add(key);
+      VT.track('rival_expand',{...STEP,which:key});
+    }
+  });
+});
+
+function reportExit(){
+  if(advanced) return;
+  VT.track('step_exit',{...STEP,expanded:[...opened]});
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')reportExit();});
+window.addEventListener('pagehide',reportExit);
+
+document.getElementById('advance').addEventListener('click',()=>{
+  if(advanced)return;
+  advanced=true;
+  VT.track('step_advance',{...STEP,expanded:[...opened]});
+  document.getElementById('stage').classList.add('leaving');
+  setTimeout(()=>{
+    // window.location.href = `/5?s=${VT.sid}`;
+    console.log('→ Tela 5 (A simulação).');
+  },420);
+});
+
+document.getElementById('theme').addEventListener('click',()=>{
+  const r=document.documentElement;
+  r.dataset.theme = r.dataset.theme==='dark' ? 'light' : 'dark';
+});
+</script>
+
+<!--
+  A LINHA QUE SE REPETE NAS TRÊS FILEIRAS
+  "Quando alguém senta na sua frente: você trava / sabe muito e ainda
+  trava / abre a ficha." É o único slot idêntico nas três, e é o que
+  ela vai lembrar. Não corte por espaço.
+
+  O QUE NÃO ENTRA AQUI, EM NENHUMA HIPÓTESE
+  Adjetivo acusatório contra formação paga. A referência rotula uma
+  categoria inteira de "pirâmide" — afirmação falsa como generalização
+  e que não sobrevive ao contraditório. Nossos três atributos por linha
+  são todos verificáveis, e "o mesmo certificado" machuca mais do que
+  qualquer xingamento machucaria, porque é verdade e pode ser conferido.
+
+  ENCADEAMENTO
+  Toda tela a partir daqui abre retomando a anterior. As telas 1, 2 e 3
+  precisam ser ajustadas: a 2 deve abrir referenciando a pergunta da 1,
+  e a 3 deve abrir referenciando o "faltava a ordem" da 2.
+-->
+</body>
+</html>

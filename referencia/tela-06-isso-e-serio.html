@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VITALLIA — Tela 6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VITALLIA · Tela 6 de 12 — "Isso é sério?"
+   Trabalho: PROVA. E aqui a nossa é estruturalmente melhor que a
+   da referência, porque a dela é depoimento e a nossa é auditável.
+
+   Ordem interna deliberada:
+   1. validador ao vivo   → prova que ela mesma executa
+   2. conteúdo             → prova que ela mesma vê
+   3. base legal           → prova que ela pode conferir
+   4. a verdade completa   → a arma
+   5. [PROVA NECESSÁRIA]   → depoimento, quando existir
+
+   O validador vem primeiro porque é a única em que ELA age.
+   Prova que o leitor executa vale mais que prova que ele lê.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg-1:#0C1A14;--bg-2:#061009;--fg:#EDE4D2;--fg-dim:#A9A392;
+  --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;--ok:#7FBF8C;
+  --card:rgba(237,228,210,.045);--card-bd:rgba(237,228,210,.11);
+  --slab:#04100A;--slab-bd:rgba(237,228,210,.09);
+  --note-bg:rgba(229,160,60,.09);--note-bd:rgba(229,160,60,.30);--note-fg:#F0BE72;
+  --halo:rgba(229,160,60,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:radial-gradient(120% 46% at 50% -6%,var(--halo) 0%,transparent 58%),
+             linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
+.stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.thread{position:fixed;top:0;left:0;height:2px;width:50%;background:var(--accent);opacity:.55;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 30px) 0 26px}
+
+.echo{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--fg-dim);opacity:.6}
+h1{margin-top:12px;font-family:var(--display);font-weight:800;
+  font-size:clamp(27px,7.2vw,37px);line-height:1.12;letter-spacing:-.03em}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{margin-top:12px;font-size:14.5px;line-height:1.55;color:var(--fg-dim);max-width:37ch}
+
+.block{margin-top:26px}
+.tag{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.tag i{width:20px;height:20px;border-radius:6px;background:var(--card);border:1px solid var(--card-bd);
+  display:flex;align-items:center;justify-content:center;font-size:9.5px;font-weight:800;color:var(--sage);font-style:normal}
+.tag span{font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;font-weight:700;color:var(--sage)}
+
+/* ---- Validador ---- */
+.val{background:var(--slab);border:1px solid var(--slab-bd);border-radius:20px;padding:19px 17px}
+.val p.q{font-size:15px;line-height:1.5;font-weight:600}
+.val p.hint{margin-top:7px;font-size:12.5px;color:var(--fg-dim);line-height:1.5}
+.val .row{display:flex;gap:8px;margin-top:14px}
+.val input{flex:1;min-width:0;height:52px;border-radius:14px;padding:0 15px;
+  background:var(--card);border:1px solid var(--card-bd);color:var(--fg);
+  font-family:var(--ui);font-size:15px;font-weight:600;letter-spacing:.06em}
+.val input::placeholder{color:var(--fg-dim);opacity:.55;letter-spacing:.02em;font-weight:500}
+.val input:focus{outline:none;border-color:var(--accent)}
+.val .row button{flex:none;height:52px;padding:0 20px;border:0;border-radius:14px;cursor:pointer;
+  background:var(--accent);color:var(--accent-ink);font-family:var(--ui);font-size:14.5px;font-weight:700}
+.val .row button:disabled{opacity:.45;cursor:default}
+
+.out{margin-top:13px;border-radius:15px;overflow:hidden;
+  max-height:0;opacity:0;transition:max-height .4s ease,opacity .3s ease}
+.out.on{max-height:420px;opacity:1}
+.out .inner{padding:16px;background:var(--card);border:1px solid var(--card-bd);border-radius:15px}
+.out .stamp{display:flex;align-items:center;gap:8px;color:var(--ok);font-size:13px;font-weight:700;margin-bottom:13px}
+.out .stamp svg{width:17px;height:17px}
+.out dl{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px}
+.out dt{color:var(--fg-dim);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding-top:2px}
+.out dd{font-weight:600;text-align:right}
+.out .demo{margin-top:13px;padding-top:11px;border-top:1px solid var(--card-bd);
+  font-size:11px;line-height:1.55;color:var(--fg-dim)}
+.out.err .stamp{color:#D98A72}
+
+/* ---- Mídia ---- */
+.media{background:var(--card);border:1px solid var(--card-bd);border-radius:18px;overflow:hidden}
+.slot{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;text-align:center;
+  background:linear-gradient(150deg,rgba(237,228,210,.05),transparent);padding:24px}
+.slot span{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-dim);line-height:2;opacity:.7}
+.media p{padding:13px 16px;font-size:13px;line-height:1.5;color:var(--fg-dim);border-top:1px solid var(--card-bd)}
+
+.pair{display:grid;gap:10px}
+@media(min-width:520px){.pair{grid-template-columns:1fr 1fr}}
+
+/* ---- Base legal ---- */
+.legalbox{background:var(--card);border:1px solid var(--card-bd);border-radius:18px;padding:17px}
+.legalbox p{font-size:13.5px;line-height:1.58;color:var(--fg-dim)}
+.legalbox p + p{margin-top:9px}
+.legalbox b{color:var(--fg);font-weight:700}
+.legalbox a{color:var(--sage);text-decoration:underline;text-underline-offset:2px}
+
+/* ---- A arma ---- */
+.truth{margin-top:26px;padding:19px 18px;border-radius:18px;
+  background:var(--note-bg);border:1px solid var(--note-bd);color:var(--note-fg)}
+.truth h3{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;margin-bottom:11px}
+.truth p{font-size:13.5px;line-height:1.58;font-weight:500}
+.truth p + p{margin-top:9px}
+.truth b{font-weight:700}
+
+/* ---- Prova que falta ---- */
+.pending{margin-top:16px;padding:15px 16px;border-radius:16px;border:1px dashed var(--card-bd);
+  font-size:12.5px;line-height:1.55;color:var(--fg-dim)}
+.pending b{color:var(--fg-dim);font-weight:700;letter-spacing:.06em}
+
+.foot{position:sticky;bottom:0;z-index:5;padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
+  background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
+.foot button{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--ui);font-size:16px;font-weight:700;box-shadow:0 6px 24px rgba(229,160,60,.24)}
+.foot svg{width:18px;height:18px}
+.fine{padding:6px 0 calc(env(safe-area-inset-bottom) + 12px);text-align:center;
+  font-size:9.5px;line-height:1.7;color:var(--fg-dim);opacity:.5}
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+</style>
+</head>
+<body>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <p class="echo">"Falta menos do que parece."</p>
+    <h1>Tá. Mas <em>isso aqui é sério?</em></h1>
+    <p class="lede">Pergunta justa. Então não acredita em mim — confere você mesma, agora.</p>
+
+    <!-- 1. a prova que ELA executa -->
+    <section class="block">
+      <div class="tag"><i>01</i><span>Prova que você confere</span></div>
+      <div class="val">
+        <p class="q">Todo certificado VITALLIA tem código e QR.</p>
+        <p class="hint">Digita o código de demonstração abaixo e vê o que acontece. É o mesmo sistema que valida o certificado de qualquer aluna.</p>
+        <div class="row">
+          <input id="code" placeholder="VTL-DEMO-0001" autocomplete="off" spellcheck="false" aria-label="Código do certificado">
+          <button id="check">Validar</button>
+        </div>
+        <div class="out" id="out"><div class="inner" id="inner"></div></div>
+      </div>
+    </section>
+
+    <!-- 2. a prova que ela vê -->
+    <section class="block">
+      <div class="tag"><i>02</i><span>Prova que você vê</span></div>
+      <div class="pair">
+        <div class="media">
+          <div class="slot"><span>slot · trecho de aula<br>45 a 60s, sem corte</span></div>
+          <p>Uma aula inteira, do jeito que ela é. Sem edição de vitrine.</p>
+        </div>
+        <div class="media">
+          <div class="slot"><span>slot · página real<br>caderno de 50 receitas</span></div>
+          <p>Uma página do caderno: a queixa, o preparo, o modo de uso e quando não pode.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. a prova que ela pode checar -->
+    <section class="block">
+      <div class="tag"><i>03</i><span>De onde vem o conteúdo</span></div>
+      <div class="legalbox">
+        <p>O curso de fitoterapia é montado em cima do <b>Memento Fitoterápico da Farmacopeia Brasileira</b> (Anvisa) e da lista <b>RENISUS</b> do Ministério da Saúde — os mesmos documentos que a rede pública usa. <a href="#" id="src">ver as fontes</a></p>
+        <p>O certificado é amparado na <b>Lei de Diretrizes e Bases (Lei 9.394/96)</b> e no <b>Decreto 5.154/2004</b>, com carga horária discriminada e código de validação.</p>
+        <p>A VITALLIA é curso livre particular e <b>não tem vínculo</b> com o Ministério da Saúde, com a Anvisa ou com o SUS.</p>
+      </div>
+    </section>
+
+    <!-- 4. a arma -->
+    <aside class="truth">
+      <h3>E a parte que ninguém te conta</h3>
+      <p>Terapia natural não é profissão regulamentada no Brasil. Não existe conselho criado por lei, como CRM ou CREA.</p>
+      <p>Por isso <b>nenhum curso dá registro profissional</b> — nem este, nem o de R$ 3.000. E nenhum curso livre é reconhecido pelo MEC, porque o MEC reconhece graduação, técnico e pós.</p>
+      <p>O que existe é o certificado de conclusão de curso livre. É esse que você recebe, e é ele que os terapeutas do país inteiro usam. <b>Quem te prometer mais que isso está mentindo</b> — e agora você sabe reconhecer.</p>
+    </aside>
+
+    <p class="pending">
+      <b>[PROVA NECESSÁRIA]</b> — depoimento em áudio de aluna, com autorização por escrito.
+      Entra aqui, depois do bloco acima. Enquanto não existir, esta tela roda sem ele:
+      prova de mecanismo é imune à objeção de "depoimento comprado", e prova fraca
+      custa mais do que prova nenhuma.
+    </p>
+
+  </main>
+
+  <div class="wrap foot">
+    <button id="advance">E o que muda pra mim?
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+    <p class="fine">VITALLIA é curso livre de capacitação (Lei 9.394/96 · Decreto 5.154/2004). Não dá registro em conselho. Conteúdo educativo, não substitui consulta médica.</p>
+  </div>
+</div>
+
+<script>
+const VT=(()=>{const KEY='vt_session',ENDPOINT=null;
+  let s=localStorage.getItem(KEY);
+  if(!s){s=(crypto.randomUUID?.()||Date.now()+Math.random().toString(36).slice(2));localStorage.setItem(KEY,s);}
+  const t0=performance.now();
+  function track(e,p={}){const d={event:e,session_id:s,ts:new Date().toISOString(),
+    dwell_ms:Math.round(performance.now()-t0),...p};
+    console.log('%c VT ','background:#E5A03C;color:#0C1A14;font-weight:700',e,d);
+    (window.dataLayer=window.dataLayer||[]).push(d);
+    window.posthog?.capture(e,d);
+    if(ENDPOINT) navigator.sendBeacon?.(ENDPOINT,JSON.stringify(d));}
+  return {track,sid:s};})();
+
+const STEP={step:6,step_name:'isso_e_serio'};
+VT.track('step_view',STEP);
+let advanced=false, validated=false;
+
+/* ---- Validador ----
+   PRODUÇÃO: trocar por fetch no endpoint real de validação.
+   O código de demonstração precisa existir de verdade no banco
+   e a página pública precisa retornar o mesmo resultado. Se o
+   validador do funil e o do site divergirem, a prova vira defeito. */
+const DEMO = {
+  code:'VTL-DEMO-0001',
+  nome:'CERTIFICADO DE DEMONSTRAÇÃO',
+  curso:'Fitoterapia e Plantas Medicinais',
+  horas:'20 horas',
+  emissao:'—'
+};
+
+const out=document.getElementById('out'), inner=document.getElementById('inner');
+const input=document.getElementById('code'), btn=document.getElementById('check');
+
+btn.addEventListener('click',()=>{
+  const v=(input.value||'').trim().toUpperCase() || DEMO.code;
+  const ok = v===DEMO.code;
+  if(!validated){ validated=true; VT.track('validator_used',{...STEP,found:ok}); }
+
+  inner.innerHTML = ok ? `
+    <div class="stamp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      Certificado válido
+    </div>
+    <dl>
+      <dt>Curso</dt><dd>${DEMO.curso}</dd>
+      <dt>Carga horária</dt><dd>${DEMO.horas}</dd>
+      <dt>Código</dt><dd>${DEMO.code}</dd>
+      <dt>Emissão</dt><dd>${DEMO.emissao}</dd>
+    </dl>
+    <p class="demo">Este é um registro de <b>demonstração</b>, criado para você testar o sistema. O certificado de uma aluna traz o nome completo dela e a data real de conclusão.</p>`
+  : `
+    <div class="stamp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      Código não encontrado
+    </div>
+    <p class="demo">Nenhum certificado com esse código. Para testar o sistema, use <b>${DEMO.code}</b>.</p>`;
+
+  out.classList.toggle('err',!ok);
+  out.classList.add('on');
+});
+input.addEventListener('keydown',e=>{ if(e.key==='Enter') btn.click(); });
+
+document.getElementById('src').addEventListener('click',e=>{
+  e.preventDefault(); VT.track('source_click',STEP);
+  // window.open('URL_DO_MEMENTO','_blank','noopener');
+});
+
+function reportExit(){ if(!advanced) VT.track('step_exit',{...STEP,validated}); }
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')reportExit();});
+window.addEventListener('pagehide',reportExit);
+
+document.getElementById('advance').addEventListener('click',()=>{
+  if(advanced)return; advanced=true;
+  VT.track('step_advance',{...STEP,validated});
+  document.getElementById('stage').classList.add('leaving');
+  setTimeout(()=>{ console.log('→ Tela 7 (A oportunidade).'); },420);
+});
+</script>
+
+<!--
+  ENCADEAMENTO: a linha de eco da TELA 7 precisa ser trocada.
+  Hoje ela retoma "falta menos do que parece", que é da tela 5.
+  Com a 6 no meio, a 7 deve retomar daqui — algo como
+  "Quem te prometer mais que isso está mentindo."
+
+  POR QUE O VALIDADOR VEM PRIMEIRO
+  É a única prova em que ELA age. Prova que o leitor executa vale mais
+  que prova que o leitor lê, porque o resultado aparece por causa de um
+  gesto dele. É o oposto do depoimento, que ele só pode aceitar ou não.
+
+  O CÓDIGO DE DEMONSTRAÇÃO PRECISA EXISTIR DE VERDADE
+  No banco e na página pública de validação. Se o validador do funil
+  responder e o do site não, a prova mais forte da oferta vira o
+  defeito mais caro dela.
+-->
+</body>
+</html>

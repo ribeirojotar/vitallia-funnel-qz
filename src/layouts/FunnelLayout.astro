@@ -1,0 +1,35 @@
+---
+// Shell mínimo, comum às 12 telas: charset, viewport, título, fonte.
+// O CSS de cada tela (paleta, layout, animação) fica inteiro dentro do
+// próprio componente da página — não é duplicado aqui, porque cada tela
+// tem uma direção visual própria e extrair isso quebraria a fidelidade
+// pixel a pixel com a referência.
+interface Props {
+  title: string;
+  description?: string;
+  fontHref: string;
+  /** Telas 1, 3, 4 (alternador de tema) e 6, 7, 8, 9 (tema escuro fixo). */
+  htmlDataTheme?: 'dark' | 'light';
+  /** Só a tela 10 usa isto, para a paleta de prêmio. */
+  bodyDataPaleta?: 'lima' | 'ouro';
+}
+
+const { title, description, fontHref, htmlDataTheme, bodyDataPaleta } = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR" data-theme={htmlDataTheme}>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href={fontHref} rel="stylesheet" />
+<slot name="head" />
+</head>
+<body data-paleta={bodyDataPaleta}>
+<slot />
+</body>
+</html>

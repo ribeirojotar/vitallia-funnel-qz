@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VITALLIA — Tela 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   VITALLIA · Tela 12 de 12 — "A decisão"
+   Trabalho: converter. Escolha binária por IDENTIDADE.
+
+   Fecha o circuito que a simulação abriu:
+   · vt_sim.plan  → destaca o card que ela mesma escolheu no turno 5
+   · vt_cond.code → vai no link do checkout e aparece na faixa
+   · vt_cond.expira_em → relógio real, contado do resgate dela
+
+   Regras desta tela:
+   · a fronteira é de IDENTIDADE, não de quantidade. "2 cursos vs 6"
+     convida a comparar preço por unidade; "cuidar da minha casa vs
+     atender outra pessoa" convida a perguntar quem ela é — e ninguém
+     escolhe ser menos.
+   · o card básico DIZ o que não inclui. É honesto e é exatamente o
+     que faz a pessoa certa subir de plano.
+   · duas objeções, coladas ao preço. Não uma parede de FAQ: objeção
+     respondida longe do seu momento é objeção plantada.
+   · garantia em uma linha, corpo pequeno, abaixo dos cards. Selo
+     gigante em produto barato sinaliza dúvida do vendedor.
+   · nenhuma informação nova. Argumento novo aqui cria objeção nova,
+     e não há mais tela para respondê-la.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+
+  --paper:#EFEADD;
+  --paper-2:#F7F3E9;
+  --ink:#16241D;
+  --ink-dim:#5E6B60;
+  --card:#FFFFFF;
+  --card-bd:#E2DCCC;
+  --green:#2E7D52;
+  --amber:#B8802A;
+  --amber-bg:#FBF1DC;
+  --amber-bd:#E2C489;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:linear-gradient(178deg,var(--paper-2) 0%,var(--paper) 46%)}
+.thread{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--amber);opacity:.6;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 22px) 0 26px}
+
+/* ---- faixa da condição ---- */
+.strip{display:none;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 14px;border-radius:13px;
+  background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber);
+  font-size:12px;font-weight:700}
+.strip.on{display:flex}
+.strip .code{padding:3px 9px;border-radius:6px;background:rgba(184,128,42,.14);
+  letter-spacing:.16em;font-size:10.5px}
+.strip .clock{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.strip svg{width:12px;height:12px}
+
+h1{margin-top:22px;font-family:var(--display);font-weight:800;
+  font-size:clamp(27px,7vw,36px);line-height:1.1;letter-spacing:-.032em}
+h1 em{font-style:normal;color:var(--amber)}
+.lede{margin-top:11px;font-size:14.5px;line-height:1.55;color:var(--ink-dim);max-width:36ch}
+
+/* ---- planos ---- */
+.plans{margin-top:22px;display:flex;flex-direction:column;gap:12px}
+.plan{background:var(--card);border:1px solid var(--card-bd);border-radius:20px;
+  padding:20px 18px;position:relative}
+.plan.pick{border-color:var(--green);border-width:2px;padding:19px 17px;
+  box-shadow:0 8px 26px rgba(46,125,82,.14)}
+.plan .badge{position:absolute;top:-10px;left:18px;padding:4px 11px;border-radius:99px;
+  background:var(--green);color:#fff;font-size:10px;font-weight:800;letter-spacing:.09em;
+  text-transform:uppercase;display:none}
+.plan.pick .badge{display:block}
+.plan .who{font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;color:var(--ink-dim)}
+.plan h2{margin-top:7px;font-family:var(--display);font-weight:800;
+  font-size:21px;line-height:1.2;letter-spacing:-.026em}
+.plan .price{margin-top:13px;display:flex;align-items:baseline;gap:9px}
+.plan .price .now{font-family:var(--display);font-weight:800;font-size:38px;
+  letter-spacing:-.04em;line-height:1}
+.plan .price .was{font-size:14px;color:var(--ink-dim);text-decoration:line-through;display:none}
+.plan .price .once{font-size:11.5px;color:var(--ink-dim);font-weight:600}
+.plan ul{margin-top:15px;display:flex;flex-direction:column;gap:8px}
+.plan li{list-style:none;display:flex;gap:9px;align-items:flex-start;
+  font-size:13.5px;line-height:1.45}
+.plan li svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--green)}
+.plan li.no{color:var(--ink-dim)}
+.plan li.no svg{color:#C08B7C}
+.plan button{margin-top:17px;width:100%;height:56px;border:0;border-radius:28px;cursor:pointer;
+  font-family:var(--ui);font-size:15.5px;font-weight:800;letter-spacing:-.01em;
+  background:var(--card-bd);color:var(--ink)}
+.plan.pick button{background:var(--green);color:#fff;box-shadow:0 6px 20px rgba(46,125,82,.26)}
+.plan .pay{margin-top:9px;text-align:center;font-size:11px;color:var(--ink-dim)}
+
+/* ---- objeções coladas ao preço ---- */
+.obj{margin-top:22px;display:flex;flex-direction:column;gap:10px}
+.obj div{padding:15px 16px;border-radius:15px;background:var(--card);border:1px solid var(--card-bd)}
+.obj h4{font-size:14px;font-weight:800;letter-spacing:-.012em}
+.obj p{margin-top:6px;font-size:13px;line-height:1.52;color:var(--ink-dim)}
+
+/* ---- selos: reduzem risco no segundo do clique ---- */
+.badges{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.badges div{background:var(--card);border:1px solid var(--card-bd);border-radius:14px;
+  padding:14px 8px;text-align:center}
+.badges .ic{width:30px;height:30px;margin:0 auto 8px;border-radius:9px;
+  background:rgba(46,125,82,.10);color:var(--green);
+  display:flex;align-items:center;justify-content:center}
+.badges svg{width:15px;height:15px}
+.badges p{font-size:10px;line-height:1.35;font-weight:800;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--ink-dim)}
+
+.warranty{margin-top:18px;padding:16px 17px;border-radius:16px;
+  background:var(--card);border:1px solid var(--card-bd);
+  display:flex;gap:13px;align-items:flex-start}
+.warranty .ic{flex:none;width:32px;height:32px;border-radius:10px;
+  background:rgba(46,125,82,.10);color:var(--green);
+  display:flex;align-items:center;justify-content:center}
+.warranty .ic svg{width:17px;height:17px}
+.warranty h4{font-size:14px;font-weight:800;letter-spacing:-.012em}
+.warranty p{margin-top:5px;font-size:12.5px;line-height:1.52;color:var(--ink-dim)}
+.warranty b{color:var(--ink);font-weight:700}
+
+/* ---- FAQ curto, colado ao botão ---- */
+.faq{margin-top:18px;border-radius:16px;overflow:hidden;
+  background:var(--card);border:1px solid var(--card-bd)}
+.faq details{border-top:1px solid var(--card-bd)}
+.faq details:first-child{border-top:0}
+.faq summary{padding:15px 16px;cursor:pointer;list-style:none;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:19px;font-weight:600;color:var(--ink-dim);
+  line-height:1;transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq .a{padding:0 16px 15px;font-size:13px;line-height:1.55;color:var(--ink-dim)}
+
+.help{margin-top:12px;display:none;align-items:center;justify-content:center;gap:9px;
+  width:100%;height:50px;border-radius:25px;text-decoration:none;
+  background:var(--card);border:1px solid var(--card-bd);color:var(--ink);
+  font-size:13.5px;font-weight:700}
+.help.on{display:flex}
+.help svg{width:16px;height:16px;color:var(--green)}
+
+.fine{padding:20px 0 calc(env(safe-area-inset-bottom) + 20px);text-align:center;
+  font-size:9.5px;line-height:1.75;color:var(--ink-dim);opacity:.75}
+</style>
+</head>
+<body>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <div class="strip" id="strip">
+      <span>Condição aplicada <span class="code" id="code"></span></span>
+      <span class="clock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span id="clock"></span>
+      </span>
+    </div>
+
+    <h1 id="title">Qual das duas <em>é você?</em></h1>
+    <p class="lede" id="lede">A escolha não é quanto gastar. É o que você vai poder fazer depois.</p>
+
+    <div class="plans">
+
+      <article class="plan" id="p-basico">
+        <span class="badge">pelo que você respondeu</span>
+        <p class="who">Pra cuidar da minha casa</p>
+        <h2>Você aprende a cuidar dos seus com segurança.</h2>
+        <div class="price">
+          <span class="now">R$ 9,90</span>
+          <span class="was" id="was-b">R$ 19,90</span>
+          <span class="once">paga uma vez</span>
+        </div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Fitoterapia e Tintura Medicinal</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 2 certificados · 40 horas</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Acesso pra sempre</li>
+          <li class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Não inclui nada sobre atender, cobrar ou conseguir cliente</li>
+          <li class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> Não inclui a ficha nem os 5 materiais</li>
+        </ul>
+        <button data-plan="basico">Entrar por R$ 9,90</button>
+        <p class="pay">Cartão, Pix ou boleto · acesso na hora</p>
+      </article>
+
+      <article class="plan" id="p-completo">
+        <span class="badge">pelo que você respondeu</span>
+        <p class="who">Pra atender outra pessoa</p>
+        <h2>Você aprende a conduzir um atendimento inteiro — e a cobrar por ele.</h2>
+        <div class="price">
+          <span class="now">R$ 37</span>
+          <span class="was" id="was-c">R$ 67</span>
+          <span class="once">paga uma vez</span>
+        </div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Os seis passos completos</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 6 certificados · 120 horas · com código de validação</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> A ficha de atendimento e a tabela de preço por região</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Os 5 materiais para usar na frente do cliente</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Acesso pra sempre</li>
+        </ul>
+        <button data-plan="completo">Quero atender</button>
+        <p class="pay" id="pay-c">Cartão, Pix ou boleto · acesso na hora</p>
+      </article>
+
+    </div>
+
+    <div class="obj">
+      <div>
+        <h4>"R$ 9,90 deve ser fraquinho."</h4>
+        <p>Gravar uma aula pra cem ou pra dez mil pessoas custa a mesma coisa. Prefiro vender barato pra muita gente do que caro pra pouca — e você tem 7 dias pra entrar, olhar tudo e pedir o dinheiro de volta se achar que menti.</p>
+      </div>
+      <div>
+        <h4>"Já comprei curso barato e não assisti."</h4>
+        <p>Acontece com todo mundo. Por isso cada aula termina com uma coisa pra você fazer no mesmo dia — não é teoria pra acumular, é receita pra usar.</p>
+      </div>
+    </div>
+
+    <div class="badges">
+      <div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H12l-1 9 8.5-11H13z"/></svg></span>
+        <p>Acesso<br>na hora</p>
+      </div>
+      <div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="11" rx="2.5"/><path d="M8 10.5V7a4 4 0 018 0v3.5"/></svg></span>
+        <p>Pagamento<br>pela Hotmart</p>
+      </div>
+      <div>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 10-16 0"/><path d="M3 15.5V13a1.5 1.5 0 013 0v2.5a1.5 1.5 0 01-3 0zM18 15.5V13a1.5 1.5 0 013 0v2.5a1.5 1.5 0 01-3 0z"/></svg></span>
+        <p>Acesso<br>pra sempre</p>
+      </div>
+    </div>
+
+    <div class="warranty">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 4.4-3.1 8.4-7.5 10-4.4-1.6-7.5-5.6-7.5-10v-6z"/><path d="M9 12l2 2 4-4.5"/></svg></span>
+      <div>
+        <h4>7 dias pra pedir o dinheiro de volta</h4>
+        <p>Entra, assiste tudo, baixa os materiais, testa uma receita. Se achar que não era o que esperava, pede na Hotmart e recebe de volta — <b>sem precisar explicar o motivo</b>.</p>
+      </div>
+    </div>
+
+    <div class="faq">
+      <details>
+        <summary>Como eu entro depois que pago?</summary>
+        <p class="a">A Hotmart manda o acesso no seu e-mail assim que o pagamento é confirmado. No cartão e no Pix é na hora; no boleto, quando compensar.</p>
+      </details>
+      <details>
+        <summary>Por quanto tempo eu tenho acesso?</summary>
+        <p class="a">Pra sempre. Não é assinatura e não renova. Você paga uma vez e o acesso fica — some duas semanas, um mês, e não perde nada.</p>
+      </details>
+      <details>
+        <summary>Serve pra quem nunca estudou isso?</summary>
+        <p class="a">O curso começa supondo que você não sabe nada, em português, sem palavra difícil. As aulas têm de 6 a 12 minutos e cada uma termina com uma coisa pra fazer no mesmo dia.</p>
+      </details>
+    </div>
+
+    <a class="help" id="help" href="#" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-12.4 7.4L3 20.5l1.7-5.4A8.4 8.4 0 1121 11.5z"/></svg>
+      Falar com alguém antes de decidir
+    </a>
+
+    <p class="fine">
+      VITALLIA é curso livre de capacitação, nos termos da Lei 9.394/96 e do Decreto 5.154/2004,
+      e emite certificado de conclusão de curso livre. Não é graduação, curso técnico nem
+      pós-graduação, e não dá registro em conselho profissional. Sem vínculo com o MEC,
+      o Ministério da Saúde, a Anvisa ou o SUS.<br><br>
+      O conteúdo é educativo e não substitui consulta, diagnóstico ou tratamento médico.
+      Nada do que é ensinado aqui trata ou cura doença. Nunca pare um remédio ou tratamento
+      sem falar com seu médico. Nada nesta página é promessa de renda.
+    </p>
+
+  </main>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — a mesma das telas 9 e 10
+   ============================================================ */
+const CONDICAO = 'material';   // 'material' | 'desconto'
+const CHECKOUT = {
+  basico:  'https://pay.hotmart.com/SEU_LINK_BASICO',
+  completo:'https://pay.hotmart.com/SEU_LINK_COMPLETO'
+};
+
+/* Parcelamento: só preencha com o que a Hotmart REALMENTE oferece
+   no seu produto, já com juros. null = a linha não aparece. */
+const PARCELA = null;      // ex.: 'ou 3x de R$ 13,10'
+
+/* Canal de atendimento: só preencha se existir alguém respondendo.
+   Botão de contato sem resposta do outro lado custa mais caro que
+   não ter botão nenhum. null = não aparece. */
+const CONTATO = null;      // ex.: 'https://wa.me/55...'
+
+const VT=(()=>{const KEY='vt_session',ENDPOINT=null;
+  let s=localStorage.getItem(KEY);
+  if(!s){s=(crypto.randomUUID?.()||Date.now()+Math.random().toString(36).slice(2));localStorage.setItem(KEY,s);}
+  const t0=performance.now();
+  function track(e,p={}){const d={event:e,session_id:s,ts:new Date().toISOString(),
+    dwell_ms:Math.round(performance.now()-t0),...p};
+    console.log('%c VT ','background:#B8802A;color:#fff;font-weight:700',e,d);
+    (window.dataLayer=window.dataLayer||[]).push(d);
+    window.posthog?.capture(e,d);
+    if(e==='checkout_click') window.fbq?.('track','InitiateCheckout');
+    if(ENDPOINT) navigator.sendBeacon?.(ENDPOINT,JSON.stringify(d));}
+  return {track,sid:s};})();
+
+const sim =JSON.parse(localStorage.getItem('vt_sim') ||'{}');
+const cond=JSON.parse(localStorage.getItem('vt_cond')||'{}');
+
+const STEP={step:12,step_name:'a_decisao'};
+VT.track('step_view',{...STEP,plan:sim.plan||null,code:cond.code||null,condicao:CONDICAO});
+
+/* ---- roteamento: ela já escolheu no turno 5 ---- */
+const rota = sim.plan==='completo' ? 'completo'
+           : sim.plan==='basico'   ? 'basico'
+           : 'completo';   /* indefinido ou sem simulação: mostra o completo em destaque */
+
+document.getElementById('p-'+rota).classList.add('pick');
+
+if(sim.plan==='basico'){
+  document.getElementById('title').innerHTML='Você disse que quer <em>cuidar dos seus</em>.';
+  document.getElementById('lede').textContent='Deixei o plano que corresponde a isso em destaque. O outro fica aqui do lado, caso você mude de ideia.';
+}else if(sim.plan==='completo'){
+  document.getElementById('title').innerHTML='Você disse que quer <em>atender e cobrar</em>.';
+  document.getElementById('lede').textContent='Só um dos dois planos faz isso. Deixei ele em destaque.';
+}
+
+/* ---- condição ---- */
+if(CONDICAO==='desconto' && cond.code){
+  document.getElementById('was-b').style.display='inline';
+  document.getElementById('was-c').style.display='inline';
+}
+if(cond.code){
+  document.getElementById('code').textContent=cond.code;
+  document.getElementById('strip').classList.add('on');
+  if(cond.expira_em) relogio(new Date(cond.expira_em).getTime());
+}
+
+function relogio(ate){
+  const el=document.getElementById('clock');
+  (function t(){
+    const d=ate-Date.now();
+    if(d<=0){ el.textContent='expirada'; return; }
+    const h=Math.floor(d/3.6e6), m=Math.floor(d%3.6e6/6e4), s=Math.floor(d%6e4/1000);
+    el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    setTimeout(t,1000);
+  })();
+}
+
+/* ---- parcelamento e contato, só se existirem de verdade ---- */
+if(PARCELA) document.getElementById('pay-c').textContent=PARCELA+' · acesso na hora';
+if(CONTATO){
+  const h=document.getElementById('help');
+  h.href=CONTATO; h.target='_blank'; h.classList.add('on');
+  h.addEventListener('click',()=>VT.track('contato_click',STEP));
+}
+
+/* Qual pergunta ela abre é a objeção viva no segundo do clique.
+   É o dado mais acionável desta tela depois do seguiu_rota. */
+document.querySelectorAll('.faq details').forEach((d,i)=>{
+  d.addEventListener('toggle',()=>{
+    if(d.open) VT.track('faq_open',{...STEP,pergunta:i+1,
+      texto:d.querySelector('summary').textContent});
+  });
+});
+
+/* ---- checkout ---- */
+document.querySelectorAll('.plan button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const plano=b.dataset.plan;
+    VT.track('checkout_click',{...STEP,
+      plano,
+      rota_sugerida:rota,
+      seguiu_rota:plano===rota,
+      code:cond.code||null});
+
+    const u=new URL(CHECKOUT[plano]);
+    u.searchParams.set('sck',VT.sid);
+    if(cond.code) u.searchParams.set('off',cond.code);
+    console.log('→ checkout:',u.toString());
+    // window.location.href=u.toString();
+  });
+});
+
+function reportExit(){ VT.track('step_exit',{...STEP,plan:sim.plan||null,code:cond.code||null}); }
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')reportExit();});
+window.addEventListener('pagehide',reportExit);
+</script>
+
+<!--
+  O QUE FALTA DO SEU LADO PARA ESTA TELA FUNCIONAR
+
+  1. Os dois links da Hotmart em CHECKOUT.
+  2. O cupom: o parâmetro 'off' precisa existir na Hotmart com o código
+     gerado na tela 10. Se não existir, ela chega no checkout, vê o
+     preço cheio, e a tela 10 vira encenação — que é o pior desfecho
+     possível pro funil inteiro.
+  3. ORDER BUMP no checkout. Não existe hoje e é a maior lacuna
+     financeira da operação: com ticket de R$ 9,90 e CAC de Meta, a
+     conta só fecha no AOV. O bump óbvio é o Kit Primeiro Cliente
+     isolado (R$ 17 a 27) no checkout do Básico — resolve a objeção
+     residual de quem escolheu o plano pessoal mas ficou curiosa sobre
+     cobrar, e converte a canibalização em receita em vez de brigar
+     com ela.
+
+  A MÉTRICA QUE IMPORTA AQUI
+  'seguiu_rota' no checkout_click. Ela responde se a simulação está
+  fazendo trabalho comercial ou só entretenimento:
+  · alta e com plano completo → o turno 5 está roteando de verdade
+  · alta mas quase todo mundo em 'basico' → a fronteira de identidade
+    não está clara o bastante nos cards
+  · baixa → ela ignora a sugestão, e aí o roteamento é decoração:
+    tire o destaque e simplifique
+
+  O QUE NÃO ENTRA NESTA TELA
+  Nenhum argumento novo. Nenhum bônus surpresa, nenhum depoimento
+  inédito, nenhuma estatística. Argumento novo no fechamento cria
+  objeção nova, e não há mais tela para respondê-la.
+
+  SE O PREÇO RISCADO ESTIVER VISÍVEL (CONDICAO='desconto')
+  R$ 19,90 e R$ 67 precisam ter sido praticados de verdade na página
+  avulsa por no mínimo 30 dias, e mantidos depois. Caso contrário
+  mantenha 'material': os riscados somem e a tela continua honesta.
+-->
+</body>
+</html>

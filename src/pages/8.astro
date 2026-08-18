@@ -1,0 +1,197 @@
+---
+import FunnelLayout from '../layouts/FunnelLayout.astro';
+import { tela08 } from '../config/funnel';
+
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
+---
+
+<FunnelLayout title={tela08.title} fontHref={FONT_HREF} htmlDataTheme="dark">
+<style is:global>
+/* ============================================================
+   VITALLIA · Tela 8 de 12 — "As duas cenas"
+   Trabalho: DESEJO + custo da inação.
+
+   Transformação escolhida: IDENTIDADE, não renda.
+   "Você é a pessoa a quem todo mundo pergunta — e que responde no
+   chute" → "...e que sabe o que perguntar de volta."
+   É o desejo dominante real (legitimidade), é 100% entregável pelo
+   produto, e não promete faturamento nenhum.
+
+   A cena 2 só aparece se ela virar. Ler sobre o futuro desejado é
+   fraco; escolher vê-lo é um microcompromisso.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg-1:#0C1A14;--bg-2:#061009;--fg:#EDE4D2;--fg-dim:#A9A392;
+  --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;
+  --card:rgba(237,228,210,.045);--card-bd:rgba(237,228,210,.11);
+  --cold:rgba(237,228,210,.03);--cold-bd:rgba(237,228,210,.08);
+  --halo:rgba(229,160,60,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:radial-gradient(120% 46% at 50% -6%,var(--halo) 0%,transparent 58%),
+             linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
+.stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.thread{position:fixed;top:0;left:0;height:2px;width:66.6%;background:var(--accent);opacity:.55;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 34px) 0 26px}
+
+.echo{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--fg-dim);opacity:.6}
+h1{margin-top:13px;font-family:var(--display);font-weight:800;
+  font-size:clamp(26px,7vw,36px);line-height:1.12;letter-spacing:-.03em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--accent)}
+
+/* ---- Alternador ---- */
+.tabs{display:flex;gap:7px;margin-top:26px}
+.tabs button{flex:1;height:44px;border-radius:22px;cursor:pointer;
+  background:var(--cold);border:1px solid var(--cold-bd);color:var(--fg-dim);
+  font-family:var(--ui);font-size:13px;font-weight:700;letter-spacing:-.005em;
+  transition:all .22s ease}
+.tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.scene{margin-top:14px;border-radius:20px;padding:26px 22px;
+  background:var(--cold);border:1px solid var(--cold-bd);min-height:290px;
+  display:flex;flex-direction:column;justify-content:center}
+.scene.warm{background:var(--card);border-color:var(--card-bd)}
+.scene .when{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;
+  font-weight:700;color:var(--sage);margin-bottom:16px}
+.scene p{font-family:var(--serif);font-style:italic;
+  font-size:clamp(19px,5.2vw,24px);line-height:1.42;color:var(--fg)}
+.scene p + p{margin-top:14px}
+.scene.cold p{color:var(--fg-dim)}
+.scene .lines{opacity:0;transform:translateY(10px);
+  animation:rise .5s cubic-bezier(.22,.7,.3,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+.close{margin-top:22px;text-align:center;font-size:15px;line-height:1.55;color:var(--fg-dim)}
+.close b{color:var(--fg);font-weight:700}
+
+.foot{position:sticky;bottom:0;z-index:5;padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
+  background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
+.foot button{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--ui);font-size:16px;font-weight:700;box-shadow:0 6px 24px rgba(229,160,60,.24)}
+.foot button:disabled{opacity:.4;box-shadow:none;cursor:default}
+.foot svg{width:18px;height:18px}
+.nudge{margin-top:11px;text-align:center;font-size:11.5px;color:var(--sage)}
+.fine{padding:6px 0 calc(env(safe-area-inset-bottom) + 12px);text-align:center;
+  font-size:9.5px;line-height:1.7;color:var(--fg-dim);opacity:.5}
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+@media (prefers-reduced-motion:reduce){.scene .lines{animation:none;opacity:1;transform:none}}
+</style>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <p class="echo">{tela08.echo}</p>
+    <h1 set:html={tela08.headline} />
+
+    <div class="tabs" role="tablist">
+      <button role="tab" id="t1" aria-selected="true">{tela08.tabs.t1}</button>
+      <button role="tab" id="t2" aria-selected="false">{tela08.tabs.t2}</button>
+    </div>
+
+    <section class="scene cold" id="scene">
+      <p class="when">{tela08.scenes[1].when}</p>
+      <div class="lines" id="lines">
+        {tela08.scenes[1].lines.map(l => <p>{l}</p>)}
+      </div>
+    </section>
+
+    <p class="close" id="close">
+      {tela08.closeInitial}
+    </p>
+  </main>
+
+  <div class="wrap foot">
+    <button id="advance" disabled>{tela08.cta}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+    <p class="nudge" id="nudge">{tela08.nudge}</p>
+    <p class="fine">{tela08.fine}</p>
+  </div>
+</div>
+
+<script>
+import { VT } from '../lib/track';
+import { prefetch } from 'astro:prefetch';
+import { tela08 } from '../config/funnel';
+
+const STEP = { step: 8, step_name: 'as_duas_cenas' };
+VT.track('step_view', STEP);
+prefetch('/9');
+
+const SCENES = tela08.scenes;
+
+const scene = document.getElementById('scene')!, lines = document.getElementById('lines')!,
+      closeEl = document.getElementById('close')!, btn = document.getElementById('advance') as HTMLButtonElement,
+      nudge = document.getElementById('nudge')!,
+      t1 = document.getElementById('t1')!, t2 = document.getElementById('t2')!;
+
+let flipped = false, advanced = false;
+
+function show(n: 1 | 2) {
+  const s = SCENES[n];
+  scene.classList.toggle('cold', s.cold);
+  scene.classList.toggle('warm', !s.cold);
+  scene.querySelector('.when')!.textContent = s.when;
+  const div = document.createElement('div');
+  div.className = 'lines';
+  div.innerHTML = s.lines.map(l => `<p>${l}</p>`).join('');
+  lines.replaceWith(div);
+  div.id = 'lines';
+  t1.setAttribute('aria-selected', String(n === 1));
+  t2.setAttribute('aria-selected', String(n === 2));
+
+  if (n === 2 && !flipped) {
+    flipped = true;
+    VT.track('scene_flip', STEP);
+    btn.disabled = false;
+    nudge.remove();
+    closeEl.innerHTML = tela08.closeAfterFlip;
+  }
+}
+
+t1.addEventListener('click', () => show(1));
+t2.addEventListener('click', () => show(2));
+
+function reportExit() { if (!advanced) VT.track('step_exit', { ...STEP, saw_scene_2: flipped }); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
+window.addEventListener('pagehide', reportExit);
+
+btn.addEventListener('click', () => {
+  if (advanced || btn.disabled) return; advanced = true;
+  VT.track('step_advance', STEP);
+  document.getElementById('stage')!.classList.add('leaving');
+  setTimeout(() => {
+    window.location.href = `/9?s=${VT.sid}`;
+  }, 420);
+});
+</script>
+
+{/*
+  POR QUE O BOTÃO COMEÇA DESABILITADO
+  A cena 2 é o desejo. Se ela avançar sem ver, chega na tela de preço
+  sem desejo formado e compara preço com preço, em vez de comparar
+  preço com dor. Virar a cena é o microcompromisso mais barato do
+  funil e o que mais muda a tela 12.
+  Se o 'scene_flip' ficar abaixo de ~85%, o problema é a rotulagem
+  das abas, não a trava — troque "A outra cena" por algo mais
+  específico antes de liberar o botão.
+
+  A TRANSFORMAÇÃO É DE IDENTIDADE, NÃO DE RENDA.
+  Nenhuma das duas cenas cita dinheiro ganho. A cena 2 termina em
+  "saber o que responder quando ela pergunta o preço" — que é
+  capacidade, não faturamento. Essa distinção é o que mantém a
+  tela dentro do que o produto entrega de verdade.
+*/}
+</FunnelLayout>
