@@ -148,7 +148,16 @@ de conduzir um atendimento.
 
 *Devolutiva:* se marcou 3+: "Você marcou [n] áreas. Curso isolado não resolve isso." Se marcou 1–2: "Certo. Mas repara que [área complementar] entra junto sem custo a mais."
 
-**Q5 — estado** · `id: uf` · seletor de UF
+**Q5 — renda desejada** · `id: renda`
+> Quanto uma renda a mais por mês mudaria a sua vida hoje?
+- R$ 300 a R$ 500 → `300`
+- R$ 500 a R$ 1.000 → `500`
+- R$ 1.000 a R$ 2.000 → `1000`
+- Mais que isso → `2000`
+
+⛔ **O número é dela, não nosso.** Esta pergunta existe para que a tela 3 possa fazer aritmética com um valor que a própria leitora escolheu. Em nenhum momento o funil afirma que ela vai atingir esse valor. A devolutiva aqui é neutra: "Anotado. Já já eu te mostro o que isso significa em atendimentos."
+
+**Q6 — estado** · `id: uf` · seletor de UF
 > Última: de que estado você é?
 
 *Devolutiva:* usa a faixa regional REAL da tabela do Kit Primeiro Cliente.
@@ -196,6 +205,65 @@ SEU PONTO DE PARTIDA
 NA SUA REGIÃO
 Primeira consulta: faixa de [X] a [Y]  ← só se FAIXA_REGIONAL existir
 
+A CONTA QUE VOCÊ MESMA FEZ  ← ramifica pelo que ela marcou na Q4
+
+⛔ **Ramificação obrigatória.** Quem marcou saboaria/tintura quer ser empreendedora com marca
+própria, não terapeuta — preço de consulta é irrelevante para ela. Quem marcou
+atendimento/fitoterapia quer cobrar consulta. Mostrar a conta errada perde a leitora.
+
+  [saboaria ou tintura]
+  Um sabonete artesanal de 90g sai por cerca de R$ [CUSTO] de matéria-prima.
+  Sabonetes desse tipo são vendidos entre R$ [MIN] e R$ [MAX].
+  Você disse que R$ [renda] fariam diferença no seu mês.
+  Isso seria [N] sabonetes. [comparação: "um lote e meio"]
+
+  [atendimento ou fitoterapia]
+  No [regiao], a faixa de referência de primeira consulta é de R$ [X] a R$ [Y].
+  Você disse que R$ [renda] fariam diferença no seu mês.
+  Isso seria [N] atendimentos no mês. [comparação: "menos de um por semana"]
+
+  [marcou os dois] → as duas contas, lado a lado
+
+Fecho comum às duas:
+  Quantos você vai conseguir depende da sua cidade e do seu esforço.
+  O que a formação te dá é a receita, a embalagem, o roteiro do que postar
+  e o que responder quando perguntarem quanto custa.
+
+⛔ A conta é sempre **divisão de um número que ela escolheu** por um valor de mercado
+verificável. Em nenhum ponto o funil afirma que ela vai atingir o valor. Sem
+`MARGEM_PRODUTO` ou `FAIXA_REGIONAL` preenchidos, o bloco não renderiza.
+
+AS QUE VÊM JUNTO  ← sempre exibir TODAS as áreas não marcadas
+
+⛔ Nunca dizer que a escolha dela é insuficiente ou errada. Ela declarou o que quer há
+trinta segundos; contradizer desfaz a identificação que o quiz acabou de construir.
+O argumento é **"você não precisa escolher"**, não "você escolheu pouco".
+
+⛔ Não liste como adição ("e ainda tem mais quatro"). Cada área não marcada recebe uma
+linha que **depende do que ela marcou** — combinação, não catálogo. É assim que o
+produto realmente funciona, então a frase é verdadeira além de persuasiva.
+
+MATRIZ (linha exibida conforme o que foi marcado na Q4):
+
+| Área extra | Marcou atendimento/fito | Marcou saboaria/tintura | Padrão |
+|---|---|---|---|
+| Saboaria | A pessoa que você atendeu sai com um produto seu na mão. Mesmo cliente, segunda receita | — | Não depende de cliente marcado |
+| Atendimento | — | Quem compra seu produto pergunta o que usar — e aí você cobra pela orientação também | Transforma o que você sabe em atividade |
+| Fitoterapia | É a base de qualquer indicação segura | Te deixa explicar por que o seu é diferente do da prateleira — e é o que faz vender mais caro | A base de tudo |
+| Tintura | Você não só indica: entrega o preparo pronto | Mesma bancada, mesmos frascos. Um lote de trabalho, dois produtos | Um lote dura meses |
+| Aromaterapia | É o que a pessoa sente na hora, e o que mais gera indicação | É o que dá cheiro e função ao seu produto | Efeito percebido rápido |
+| Homeopatia | Base de conhecimento: conversar sobre o assunto sem falar besteira e saber quando o caso não é seu. **Não é rota de venda** | idem | idem |
+
+⛔ A linha da homeopatia continua negando que seja rota de renda, mesmo aqui. Quando
+cinco linhas afirmam e uma nega, as cinco ficam mais críveis.
+
+FECHO (sempre):
+  Você marcou [áreas]. Isso já é uma fonte.
+  Mas fonte única depende de uma coisa dar certo: [conseguir cliente / vender volume].
+  Tem mês que anda, tem mês que não.
+  Quem trabalha com duas frentes tem uma segurando a outra.
+  E as seis vêm no mesmo acesso — você não precisa escolher.
+
 [se marcou 3+ áreas]
 Você marcou [n] áreas diferentes. Comprar quatro cursos separados
 custaria mais de R$ 400 e te daria quatro conteúdos que não
@@ -231,6 +299,21 @@ Cada card em linguagem de resultado, não de conteúdo:
 Fecho: "Ao concluir cada uma, você recebe o certificado correspondente."
 
 ⛔ O certificado é **consequência**, não argumento principal. Não abra a tela com "6 certificados".
+
+**ROTA DE RENDA POR ÁREA** — cada card leva uma linha curta dizendo *como* aquela área vira dinheiro. Não afirme que todas dão renda; diga de que forma cada uma dá.
+
+| Área | Linha |
+|---|---|
+| Saboaria | Vende o produto — não depende de cliente marcado. É a rota mais rápida |
+| Tintura | Um lote dura meses e você vende ao longo do tempo |
+| Fitoterapia | A base do atendimento cobrado |
+| Atendimento | Onde está a tabela de preço por região e o roteiro de primeiro cliente |
+| Aromaterapia | A pessoa sente na hora — é o que mais gera indicação |
+| Homeopatia | Base de conhecimento, amplia o que você conversa. **Não é rota de venda** |
+
+⛔ A linha da homeopatia diz explicitamente que ela **não** é rota de renda. Isso não enfraquece a oferta — fortalece as outras cinco. Promessa uniforme ("todas dão dinheiro") derruba o crédito do conjunto, porque a leitora abre a lista e confere.
+
+⛔ Nenhuma linha cita valor, faixa de faturamento ou tempo para o primeiro resultado.
 
 ---
 
@@ -278,9 +361,50 @@ Kit Primeiro Cliente: 30 posts prontos, texto de bio, script de WhatsApp
 
 COMO FUNCIONA
 Aulas de 6 a 12 minutos · celular, computador ou TV · acesso pra sempre
+
+O QUE ISSO CUSTA POR ÁREA
+6 formações · 120 horas · R$ 37
+
+R$ 6,17 por formação
+R$ 0,31 por hora de aula
+
+Formações combo com esse número de áreas custam
+entre R$ [MIN] e R$ [MAX] no mercado.
 ```
 
+⛔ **Divisão, não contagem.** O concorrente tem 5 cursos e 20 bônus — numa disputa de
+quantidade nós perdemos, e ainda reforçamos o "barato demais, deve ser fraco". A divisão
+resolve pelo avesso: não é barato, é custo diluído em seis áreas. E é aritmética que ela
+confere sozinha.
+
+⛔ A faixa de mercado precisa de lastro: 10 a 15 prints datados de páginas concorrentes com
+preço visível, guardados. Sem os prints, `FAIXA_MERCADO = null` e o parágrafo não renderiza.
+
+⛔ **Nunca nomeie concorrente.** Publicidade comparativa é legal, mas nomear convida resposta
+e não traz retorno. Faixa de mercado dá o mesmo efeito com zero exposição.
+
 Números contáveis e verdadeiros impressionam mais que valores inventados nessa compradora — ela já fechou a aba de um curso de R$ 3.000 e tem detector de exagero calibrado.
+
+**BLOCO DE CENA — só aparece para quem marcou saboaria ou tintura na Q4**
+
+Boa parte dessa compradora não quer atender ninguém: quer ter marca própria. A oferta precisa mostrar a cena de negócio, não só a lista de conteúdo.
+
+```
+Você faz o lote no domingo. Embala, tira foto na luz da janela,
+posta com a legenda que já vem pronta. A vizinha pergunta o preço,
+e dessa vez você tem resposta.
+
+No mês seguinte tem nome, tem rótulo, tem gente pedindo de novo.
+Deixou de ser presente e virou produto.
+```
+
+E logo abaixo, o que a formação entrega para isso — tudo verificável no produto:
+receitas que dão produto vendável · embalagem e caixa de presente (curso 4) ·
+30 posts prontos, texto de bio e script de WhatsApp para quando perguntarem o preço ·
+como se formalizar como MEI · a margem por produto, para saber se vale
+
+⛔ A cena descreve **atividade**, não resultado financeiro. Nenhuma frase afirma
+quanto ela vai vender ou ganhar.
 
 ---
 
@@ -379,6 +503,30 @@ pagamento único · acesso pra sempre
 
 **Selos** (3): acesso na hora · pagamento pela Hotmart · acesso pra sempre.
 
+**COMPARAÇÃO — colada ao preço, nunca antes**
+
+Tabela de duas colunas: "Formações desse tipo" × "VITALLIA". Só linhas que você consegue
+sustentar com print datado ou com o próprio produto.
+
+| | Por aí | Aqui |
+|---|---|---|
+| Áreas incluídas | 3 a 5 | **6** |
+| Ensina quando **não** usar | raro | em todas as formações |
+| Ficha de atendimento pronta | não | incluída |
+| Certificado com código que valida online | varia | sim |
+| Preço | R$ [MIN] a R$ [MAX] | **R$ 37** |
+
+⛔ Sem nome de concorrente em nenhuma linha. Sem a linha "diz a verdade sobre MEC" — afirmar
+que os outros mentem é claim sobre terceiro; a nossa honestidade se sustenta sozinha no FAQ.
+
+⛔ Onde a informação varia entre concorrentes, escreva "varia". Linha de comparação que não
+resiste a um print é a que derruba a tabela inteira.
+
+⛔ Preço não pode virar o argumento principal. Comprador que entra por ser barato não assiste,
+não usa e pede reembolso — e no Hotmart taxa alta de reembolso vira problema de plataforma
+antes de virar problema de caixa. Por isso a divisão fica na tela 6 (depois do desejo) e a
+comparação aqui (colada ao preço). Nunca no gancho.
+
 **Garantia** em card discreto: 7 dias, sem precisar explicar.
 
 **FAQ** — 5 perguntas em acordeão, com `faq_open` rastreado:
@@ -433,7 +581,8 @@ Mantém o `VT` de `src/lib/track.ts` sem mudança de assinatura. Renumera os `ST
 |---|---|---|
 | `quiz_answer` | tela 2, por pergunta | Segmentação de tudo o que vem depois |
 | `areas_selected` | tela 2, Q4 | `{count, areas[]}` — quantas áreas ela marca prevê conversão |
-| `uf_selected` | tela 2, Q5 | Concentração geográfica para segmentar criativo |
+| `uf_selected` | tela 2, Q6 | Concentração geográfica para segmentar criativo |
+| `renda_declarada` | tela 2, Q5 | Faixa que ela mesma escolheu. Cruzar com `checkout_click`: se as faixas altas converterem muito melhor, o criativo deve trazer mais gente com essa intenção |
 | `condicao_resgatada` | tela 8 | Meta: `AddToCart` |
 | `checkout_click` | tela 9 | Meta: `InitiateCheckout` |
 | `faq_open` | tela 9 | Qual objeção está viva no segundo do clique |
@@ -467,7 +616,20 @@ export const PRECO = {
 };
 
 export const FAIXA_REGIONAL = null;  // { norte:[x,y], nordeste:[x,y], ... }
-                                     // null = esconde a devolutiva de valor
+                                     // faixa de primeira consulta por região
+                                     // null = esconde a conta de atendimento
+
+export const MARGEM_PRODUTO = null;  // { custo: n, venda: [min,max], unidade: 'sabonete de 90g' }
+                                     // custo de insumo e preço de mercado praticado
+                                     // null = esconde a conta de saboaria/tintura
+                                     // ⛔ os dois valores precisam ter fonte: nota de
+                                     // compra de insumo e preços praticados em anúncios
+                                     // reais. Sem lastro, deixe null.
+
+export const FAIXA_MERCADO = null;   // [min, max] — preço de formações combo equivalentes
+                                     // ⛔ exige 10 a 15 prints datados de páginas
+                                     // concorrentes com preço visível, guardados.
+                                     // null = esconde a divisão e a linha de preço da tabela
 
 export const CHECKOUT = {
   completo: '',        // link Hotmart
@@ -493,11 +655,18 @@ Lista fechada. Se alguma dessas aparecer numa sugestão futura, recuse e aponte 
 - Valor de faturamento como headline, número grande na tela, ou média agregada de alunas
 - Brasão, laurel, escudo, fita ou selo de associação no certificado
 - Promessa de renda, faturamento ou "mercado bilionário"
+- Afirmar que todas as áreas dão renda — a homeopatia não é rota de venda, e dizer isso fortalece as outras
+- Qualquer valor de ganho que não tenha sido escolhido pela própria leitora no quiz
 - Promessa de registro profissional, carteira, conselho ou selo do MEC
 - Simulação de presença humana ao vivo: avatar com selo, "digitando", "online", ícone de chamada, caixa de mensagem que não envia
 - Clone da interface do WhatsApp (risco de reprovação e banimento no Meta Ads)
+- Nome de concorrente em qualquer lugar da página — use faixa de mercado, com prints datados como lastro
+- Linha de comparação que não resista a um print, ou que afirme algo sobre a conduta de terceiro
+- Preço como argumento principal ou como gancho — a divisão entra depois do desejo, a comparação colada ao preço
 - Adjetivo acusatório contra formação concorrente — só atributo verificável
 - Qualquer texto que faça a leitora se sentir burra
+- Qualquer texto que invalide a escolha que ela acabou de fazer no quiz. As áreas não marcadas se apresentam como "você não precisa escolher", nunca como "o que você quis não basta"
+- Qualquer texto que diga que a escolha dela no quiz foi errada ou insuficiente — o argumento é "você não precisa escolher", nunca "você escolheu pouco"
 
 ---
 

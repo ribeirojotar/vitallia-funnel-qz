@@ -78,6 +78,23 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justi
   background:var(--note-bg);border:1px solid var(--note-bd);color:var(--note-fg);
   font-size:13.5px;line-height:1.55;font-weight:500}
 
+/* ---- A conta que você mesma fez ---- */
+.contaBloco{margin-top:4px}
+.contaBloco p{font-size:13.5px;line-height:1.5;color:var(--them-fg)}
+.contaBloco p + p{margin-top:4px}
+.contaBloco p.n{font-weight:700;color:var(--green)}
+.contaDuo{display:grid;gap:14px}
+.contaDuo.duo{grid-template-columns:1fr}
+@media(min-width:480px){.contaDuo.duo{grid-template-columns:1fr 1fr}}
+.contaFecho{margin-top:12px;font-size:12.5px;line-height:1.5;color:var(--time)}
+
+/* ---- As que vêm junto ---- */
+.vemJuntoItem{padding:9px 0;border-top:1px solid rgba(22,36,29,.08)}
+.vemJuntoItem:first-child{border-top:0}
+.vemJuntoItem b{font-size:13.5px;font-weight:700;color:var(--them-fg)}
+.vemJuntoItem span{display:block;margin-top:2px;font-size:12.5px;line-height:1.45;color:var(--time)}
+.vemJuntoFecho{margin-top:12px;font-size:13px;line-height:1.5;font-weight:600;color:var(--green)}
+
 .cta{margin-top:22px}
 .cta button{width:100%;height:58px;border:0;border-radius:29px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;gap:10px;
@@ -110,6 +127,22 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justi
           <p class="regiao" id="regiaoLinha"></p>
         </div>
 
+        {/* A conta que você mesma fez — só renderiza se MARGEM_PRODUTO
+            e/ou FAIXA_REGIONAL estiverem preenchidos em oferta.ts, e só
+            para as rotas que ela marcou na Q4. */}
+        <div class="grp" id="contaGrp" style="display:none">
+          <h4>{tela3.conta.labelSecao}</h4>
+          <div class="contaDuo" id="contaDuo"></div>
+          <p class="contaFecho">{tela3.conta.fechoComum}</p>
+        </div>
+
+        {/* As que vêm junto — sempre aparece com as áreas não marcadas. */}
+        <div class="grp" id="vemJuntoGrp" style="display:none">
+          <h4>{tela3.vemJunto.labelSecao}</h4>
+          <div id="vemJuntoLista"></div>
+          <p class="vemJuntoFecho" id="vemJuntoFecho"></p>
+        </div>
+
         <div class="unlock" id="multiAreas" style="display:none"></div>
       </div>
 
@@ -136,9 +169,11 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justi
 <script>
 import { VT } from '../lib/track';
 import { prefetch } from 'astro:prefetch';
-import { tela3, AREAS } from '../config/funnel';
-import { FAIXA_REGIONAL } from '../config/oferta';
-import { PONTO_DE_PARTIDA_POR_NIVEL } from '../config/funnel';
+import { tela3, AREAS, RENDA_OPCOES, CONEXAO_AREA_NAO_MARCADA, PONTO_DE_PARTIDA_POR_NIVEL } from '../config/funnel';
+import { FAIXA_REGIONAL, MARGEM_PRODUTO } from '../config/oferta';
+
+const GRUPO_ATENDIMENTO_FITO = ['atendimento', 'fito'];
+const GRUPO_SABOARIA_TINTURA = ['saboaria', 'tintura'];
 
 const STEP = { step: 3, step_name: 'resultado' };
 
@@ -166,6 +201,72 @@ if (!sim.completed_at) {
   if (faixa) {
     document.getElementById('regiaoGrp')!.style.display = '';
     document.getElementById('regiaoLinha')!.textContent = tela3.labelRegiaoLinhaTemplate(faixa[0], faixa[1]);
+  }
+
+  // ---- A conta que você mesma fez ----
+  // ⛔ Ramificação obrigatória: quem marcou saboaria/tintura quer marca
+  // própria (preço de consulta é irrelevante pra ela); quem marcou
+  // atendimento/fitoterapia quer cobrar consulta. A conta é sempre
+  // divisão de um número que ELA escolheu (Q5) por um valor de mercado
+  // verificável — nunca afirma que ela vai atingi-lo.
+  const temAF = areas.some(a => GRUPO_ATENDIMENTO_FITO.includes(a));
+  const temST = areas.some(a => GRUPO_SABOARIA_TINTURA.includes(a));
+  const rendaOpcao = RENDA_OPCOES.find(r => r.v === sim.answers?.renda);
+  const contaBlocos: string[] = [];
+
+  if (temST && rendaOpcao && MARGEM_PRODUTO) {
+    const margemUnidade = (MARGEM_PRODUTO.venda[0] + MARGEM_PRODUTO.venda[1]) / 2 - MARGEM_PRODUTO.custo;
+    const n = Math.max(1, Math.round(rendaOpcao.valor / margemUnidade));
+    const c = tela3.conta.saboaria;
+    contaBlocos.push(`<div class="contaBloco">
+      <p>${c.linha1Template(MARGEM_PRODUTO.custo)}</p>
+      <p>${c.linha2Template(MARGEM_PRODUTO.venda[0], MARGEM_PRODUTO.venda[1])}</p>
+      <p>${c.linha3Template(rendaOpcao.valor)}</p>
+      <p class="n">${c.linha4Template(n)}</p>
+    </div>`);
+  }
+  if (temAF && rendaOpcao && faixa) {
+    const mediaConsulta = (faixa[0] + faixa[1]) / 2;
+    const n = Math.max(1, Math.round(rendaOpcao.valor / mediaConsulta));
+    const c = tela3.conta.atendimento;
+    const regiaoLabel = sim.regiao ? sim.regiao[0].toUpperCase() + sim.regiao.slice(1) : '';
+    contaBlocos.push(`<div class="contaBloco">
+      <p>${c.linha1Template(regiaoLabel, faixa[0], faixa[1])}</p>
+      <p>${c.linha2Template(rendaOpcao.valor)}</p>
+      <p class="n">${c.linha3Template(n)}</p>
+    </div>`);
+  }
+  if (contaBlocos.length > 0) {
+    const contaGrp = document.getElementById('contaGrp')!;
+    contaGrp.style.display = '';
+    const contaDuo = document.getElementById('contaDuo')!;
+    contaDuo.classList.toggle('duo', contaBlocos.length > 1);
+    contaDuo.innerHTML = contaBlocos.join('');
+  }
+
+  // ---- As que vêm junto ----
+  // ⛔ Sempre exibir TODAS as áreas não marcadas. Nunca dizer que a
+  // escolha dela é insuficiente — "você não precisa escolher", nunca
+  // "você escolheu pouco". Cada linha depende do que ela marcou.
+  const naoMarcadas = AREAS.filter(a => !areas.includes(a.key));
+  if (naoMarcadas.length > 0) {
+    const vemJuntoGrp = document.getElementById('vemJuntoGrp')!;
+    vemJuntoGrp.style.display = '';
+
+    document.getElementById('vemJuntoLista')!.innerHTML = naoMarcadas.map(a => {
+      const conexao = CONEXAO_AREA_NAO_MARCADA[a.key];
+      let linha = conexao?.padrao || '';
+      if (temAF && conexao?.atendimentoFito) linha = conexao.atendimentoFito;
+      else if (temST && conexao?.saboariaTintura) linha = conexao.saboariaTintura;
+      return `<div class="vemJuntoItem"><b>${a.nomeCompleto}</b><span>${linha}</span></div>`;
+    }).join('');
+
+    const areasFormatadas = areas
+      .map(k => AREAS.find(a => a.key === k)?.nome || k)
+      .reduce((acc, nome, i, arr) => acc + (i === 0 ? nome : i === arr.length - 1 ? ` e ${nome}` : `, ${nome}`), '');
+    const foco = temAF ? 'conseguir cliente' : temST ? 'vender volume' : 'conseguir cliente';
+    document.getElementById('vemJuntoFecho')!.innerHTML =
+      `${tela3.vemJunto.fechoLinha1Template(areasFormatadas)} ${tela3.vemJunto.fechoLinha2Template(foco)} ${tela3.vemJunto.fechoResto}`;
   }
 
   if (areas.length >= 3) {
@@ -198,4 +299,20 @@ if (!sim.completed_at) {
   });
 }
 </script>
+
+{/*
+  V2.1 — A CONTA QUE VOCÊ MESMA FEZ
+  Divisão de um número que ELA escolheu na Q5 por um valor de mercado
+  verificável (MARGEM_PRODUTO para saboaria/tintura, FAIXA_REGIONAL
+  para atendimento/fitoterapia) — nunca uma afirmação de que ela vai
+  atingir esse valor. Sem os dois configs, o bloco inteiro não renderiza.
+  Quem marca as duas rotas vê as duas contas lado a lado (`.contaDuo.duo`,
+  grade de 2 colunas a partir de 480px, uma coluna antes disso).
+
+  AS QUE VÊM JUNTO
+  Sempre aparece, com todas as áreas não marcadas — nunca como "e ainda
+  tem mais quatro" (listagem), sempre como conexão com o que ela já
+  marcou (CONEXAO_AREA_NAO_MARCADA em src/config/funnel.ts). O
+  argumento é "você não precisa escolher", nunca "você escolheu pouco".
+*/}
 </FunnelLayout>

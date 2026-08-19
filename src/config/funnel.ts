@@ -52,6 +52,18 @@ export const REGIAO_LABEL: Record<Regiao, string> = {
   sul: 'Sul',
 };
 
+// ---- Faixas de renda desejada — Q5 do diagnóstico. `valor` é o ponto
+// representativo de cada faixa (o meio, arredondado; a última usa o
+// piso, já que "mais que isso" é aberta), usado só para a aritmética
+// da "conta que você mesma fez" na tela 3. O número é sempre dela —
+// o funil nunca afirma que ela vai atingi-lo. ----
+export const RENDA_OPCOES = [
+  { v: '300', l: 'R$ 300 a R$ 500', valor: 400 },
+  { v: '500', l: 'R$ 500 a R$ 1.000', valor: 750 },
+  { v: '1000', l: 'R$ 1.000 a R$ 2.000', valor: 1500 },
+  { v: '2000', l: 'Mais que isso', valor: 2000 },
+] as const;
+
 // ---- As seis áreas — chave única usada na Q4 do diagnóstico, nos
 // cards da tela 4 e na reordenação por "você marcou esta". ----
 export const AREAS = [
@@ -70,11 +82,14 @@ export const tela2 = {
   title: 'VITALLIA — Diagnóstico',
   bar: {
     h1: 'Diagnóstico rápido',
-    sub: '5 perguntas · suas respostas ficam neste aparelho',
+    // a Q5 (renda) entrou depois da primeira versão do brief, que só
+    // tinha 5 perguntas — o texto original ("5 perguntas") não bate
+    // mais com o roteiro de 6 perguntas abaixo, então segue corrigido.
+    sub: '6 perguntas · suas respostas ficam neste aparelho',
   },
   legal: 'Conteúdo educativo. Não substitui consulta, diagnóstico ou tratamento médico.<br>VITALLIA é curso livre (Lei 9.394/96 · Decreto 5.154/2004). Sem vínculo com MEC, Anvisa ou SUS.',
   opening: [
-    'Antes de te mostrar a formação, cinco perguntas.',
+    'Antes de te mostrar a formação, seis perguntas.',
     'Elas mudam o que você vai ver depois — inclusive o valor de referência de consulta na sua região.',
   ],
   openingCta: 'Pode começar',
@@ -126,6 +141,15 @@ export const tela2 = {
       replyManyTemplate: (n: number) => `Você marcou ${n} áreas. Curso isolado não resolve isso.`,
       replyFewTemplate: (areaComplementar: string) => `Certo. Mas repara que ${areaComplementar} entra junto sem custo a mais.`,
     },
+    // ⛔ O número é dela, não nosso: existe para a tela 3 fazer aritmética
+    // com um valor que a própria leitora escolheu. Em nenhum momento o
+    // funil afirma que ela vai atingir esse valor.
+    renda: {
+      id: 'renda',
+      ask: 'Quanto uma renda a mais por mês mudaria a sua vida hoje?',
+      opts: RENDA_OPCOES.map(r => ({ v: r.v, l: r.l })),
+      reply: ['Anotado. Já já eu te mostro o que isso significa em atendimentos.'],
+    },
     uf: {
       id: 'uf',
       ask: 'Última: de que estado você é?',
@@ -166,6 +190,46 @@ export const PONTO_DE_PARTIDA_POR_NIVEL: Record<string, string> = {
   atendo: 'Você já atende alguém. A formação fecha o que falta: ficha, preço e segurança documentada.',
 };
 
+// ---- Conexão de cada área NÃO marcada com o que ela marcou — "as que
+// vêm junto" da tela 3. Resolução (ver 3-resultado.astro): se o
+// conjunto marcado cruza com {atendimento, fito}, usa `atendimentoFito`;
+// senão, se cruza com {saboaria, tintura}, usa `saboariaTintura`; senão
+// usa `padrao`. Homeopatia só tem `padrao` porque a linha é idêntica
+// nas três colunas da tabela original — ela nunca é rota de venda,
+// não importa o que mais foi marcado. ----
+export type ConexaoArea = { atendimentoFito?: string; saboariaTintura?: string; padrao: string };
+
+export const CONEXAO_AREA_NAO_MARCADA: Record<string, ConexaoArea> = {
+  saboaria: {
+    atendimentoFito: 'A pessoa que você atendeu sai com um produto seu na mão. Mesmo cliente, segunda receita',
+    padrao: 'Não depende de cliente marcado',
+  },
+  atendimento: {
+    saboariaTintura: 'Quem compra seu produto pergunta o que usar — e aí você cobra pela orientação também',
+    padrao: 'Transforma o que você sabe em atividade',
+  },
+  fito: {
+    atendimentoFito: 'É a base de qualquer indicação segura',
+    saboariaTintura: 'Te deixa explicar por que o seu é diferente do da prateleira — e é o que faz vender mais caro',
+    padrao: 'A base de tudo',
+  },
+  tintura: {
+    atendimentoFito: 'Você não só indica: entrega o preparo pronto',
+    saboariaTintura: 'Mesma bancada, mesmos frascos. Um lote de trabalho, dois produtos',
+    padrao: 'Um lote dura meses',
+  },
+  aroma: {
+    atendimentoFito: 'É o que a pessoa sente na hora, e o que mais gera indicação',
+    saboariaTintura: 'É o que dá cheiro e função ao seu produto',
+    padrao: 'Efeito percebido rápido',
+  },
+  homeo: {
+    // ⛔ idem nas três colunas da tabela original — nunca é rota de
+    // venda, não importa o que mais foi marcado.
+    padrao: 'Base de conhecimento: conversar sobre o assunto sem falar besteira e saber quando o caso não é seu. Não é rota de venda',
+  },
+};
+
 export const tela3 = {
   title: 'VITALLIA — Seu resultado',
   labelPerfil: 'Seu perfil',
@@ -173,6 +237,39 @@ export const tela3 = {
   labelPontoDePartida: 'Seu ponto de partida',
   labelRegiao: 'Na sua região',
   labelRegiaoLinhaTemplate: (x: number, y: number) => `Primeira consulta: faixa de R$ ${x} a R$ ${y}`,
+
+  // ⛔ Ramificação obrigatória: quem marcou saboaria/tintura quer marca
+  // própria, não terapeuta — preço de consulta é irrelevante pra ela.
+  // Quem marcou atendimento/fitoterapia quer cobrar consulta. A conta é
+  // sempre divisão de um número que ELA escolheu (Q5) por um valor de
+  // mercado verificável; em nenhum ponto afirma que ela vai atingi-lo.
+  conta: {
+    labelSecao: 'A conta que você mesma fez',
+    saboaria: {
+      linha1Template: (custo: number) => `Um sabonete artesanal de 90g sai por cerca de R$ ${custo} de matéria-prima.`,
+      linha2Template: (min: number, max: number) => `Sabonetes desse tipo são vendidos entre R$ ${min} e R$ ${max}.`,
+      linha3Template: (renda: number) => `Você disse que R$ ${renda} fariam diferença no seu mês.`,
+      linha4Template: (n: number) => `Isso seria ${n} sabonetes.`,
+    },
+    atendimento: {
+      linha1Template: (regiaoLabel: string, x: number, y: number) => `No ${regiaoLabel}, a faixa de referência de primeira consulta é de R$ ${x} a R$ ${y}.`,
+      linha2Template: (renda: number) => `Você disse que R$ ${renda} fariam diferença no seu mês.`,
+      linha3Template: (n: number) => `Isso seria ${n} atendimentos no mês.`,
+    },
+    fechoComum: 'Quantos você vai conseguir depende da sua cidade e do seu esforço. O que a formação te dá é a receita, a embalagem, o roteiro do que postar e o que responder quando perguntarem quanto custa.',
+  },
+
+  // ⛔ Sempre exibir TODAS as áreas não marcadas. Nunca dizer que a
+  // escolha dela é insuficiente — o argumento é "você não precisa
+  // escolher", nunca "você escolheu pouco". Cada linha depende do que
+  // ela marcou (ver CONEXAO_AREA_NAO_MARCADA), não é lista de adição.
+  vemJunto: {
+    labelSecao: 'As que vêm junto',
+    fechoLinha1Template: (areas: string) => `Você marcou ${areas}. Isso já é uma fonte.`,
+    fechoLinha2Template: (foco: string) => `Mas fonte única depende de uma coisa dar certo: ${foco}.`,
+    fechoResto: 'Tem mês que anda, tem mês que não. Quem trabalha com duas frentes tem uma segurando a outra. E as seis vêm no mesmo acesso — você não precisa escolher.',
+  },
+
   multiAreasBloco:
     'Comprar quatro cursos separados custaria mais de R$ 400 e te daria quatro conteúdos que não conversam entre si. Foi por isso que a VITALLIA foi montada como formação única.',
   multiAreasBlocoTemplate: (n: number) => `Você marcou ${n} áreas diferentes.`,
@@ -192,33 +289,43 @@ export const tela4 = {
       key: 'fito',
       titulo: 'Fitoterapia e Plantas Medicinais',
       texto: 'As plantas mais usadas no Brasil, o que cada uma faz, por quantos dias, em que quantidade, e quando não pode: gestante, pressão alta, quem toma remédio contínuo.',
+      linhaRenda: 'A base do atendimento cobrado',
     },
     {
       key: 'tintura',
       titulo: 'Tintura Medicinal',
       texto: 'Transformar planta em um produto que dura meses: álcool, proporção, maceração, filtragem, envase e validade.',
+      linhaRenda: 'Um lote dura meses e você vende ao longo do tempo',
     },
     {
       key: 'aroma',
       titulo: 'Aromaterapia e Óleos Essenciais',
       texto: 'A diluição certa para criança, gestante e pele sensível, e as misturas para os pedidos mais comuns.',
+      linhaRenda: 'A pessoa sente na hora — é o que mais gera indicação',
     },
     {
       key: 'saboaria',
       titulo: 'Saboaria Natural',
       texto: 'O produto que você vende sem depender de cliente marcado: receitas, segurança, embalagem e venda.',
+      linhaRenda: 'Vende o produto — não depende de cliente marcado. É a rota mais rápida',
     },
     {
       key: 'homeo',
       titulo: 'Homeopatia Integrativa',
       texto: 'Entender o assunto para saber conversar sobre ele, e reconhecer quando o caso não é seu.',
+      // ⛔ diz explicitamente que NÃO é rota de venda — isso fortalece o
+      // crédito das outras cinco (promessa uniforme derruba o conjunto,
+      // porque a leitora abre a lista inteira e confere).
+      linhaRenda: 'Base de conhecimento, amplia o que você conversa. Não é rota de venda',
     },
     {
       key: 'atendimento',
       titulo: 'Atendimento e Primeiro Cliente',
       texto: 'A ficha campo por campo, as perguntas da primeira conversa, quanto cobrar por região, como se formalizar como MEI.',
+      linhaRenda: 'Onde está a tabela de preço por região e o roteiro de primeiro cliente',
     },
   ],
+  linhaRendaKicker: 'Como vira dinheiro',
   marcadaBadge: 'você marcou esta',
   fecho: 'Ao concluir cada uma, você recebe o certificado correspondente.',
   // escolha desta implementação: o brief não nomeou o rótulo do CTA
@@ -276,6 +383,37 @@ export const tela6 = {
   comoFunciona: {
     kicker: 'Como funciona',
     texto: 'Aulas de 6 a 12 minutos · celular, computador ou TV · acesso pra sempre',
+  },
+  // ⛔ Divisão, não contagem — não é "barato", é custo diluído em seis
+  // áreas, e é aritmética que ela confere sozinha. Os dois valores
+  // (R$ 6,17 e R$ 0,31) são fixos: 37 ÷ 6 formações e 37 ÷ 120 horas.
+  custoPorArea: {
+    kicker: 'O que isso custa por área',
+    linha1: '6 formações · 120 horas · R$ 37',
+    porFormacao: 'R$ 6,17 por formação',
+    porHora: 'R$ 0,31 por hora de aula',
+    // ⛔ exige 10 a 15 prints datados de páginas concorrentes com preço
+    // visível. Sem FAIXA_MERCADO preenchido, este parágrafo não renderiza.
+    faixaMercadoTemplate: (min: number, max: number) => `Formações combo com esse número de áreas custam entre R$ ${min} e R$ ${max} no mercado.`,
+  },
+  // Só aparece para quem marcou saboaria ou tintura na Q4 — essa parte
+  // da compradora não quer atender ninguém, quer marca própria, e a
+  // oferta precisa mostrar a cena de negócio, não só a lista de conteúdo.
+  // ⛔ Descreve atividade, não resultado financeiro — nenhuma frase
+  // afirma quanto ela vai vender ou ganhar.
+  blocoCena: {
+    paragrafos: [
+      'Você faz o lote no domingo. Embala, tira foto na luz da janela, posta com a legenda que já vem pronta. A vizinha pergunta o preço, e dessa vez você tem resposta.',
+      'No mês seguinte tem nome, tem rótulo, tem gente pedindo de novo. Deixou de ser presente e virou produto.',
+    ],
+    entregaKicker: 'O que a formação entrega para isso',
+    entregaItens: [
+      'Receitas que dão produto vendável',
+      'Embalagem e caixa de presente (curso 4)',
+      '30 posts prontos, texto de bio e script de WhatsApp para quando perguntarem o preço',
+      'Como se formalizar como MEI',
+      'A margem por produto, para saber se vale',
+    ],
   },
   // escolha desta implementação: leva para a tela 7 (a prova).
   cta: 'Quero ver a prova',
@@ -393,6 +531,24 @@ export const tela9 = {
   ],
   cta: 'Quero a formação completa',
   pay: 'Cartão, Pix ou boleto · acesso na hora',
+  // Colada ao preço, nunca antes. ⛔ Sem nome de concorrente em nenhuma
+  // linha — usa "por aí" e faixa de mercado, com prints datados como
+  // lastro. Linha de preço só renderiza com FAIXA_MERCADO preenchido;
+  // as outras quatro são verificáveis no próprio produto e ficam
+  // sempre visíveis.
+  comparacao: {
+    colunaPorAi: 'Por aí',
+    colunaAqui: 'Aqui',
+    linhas: [
+      { label: 'Áreas incluídas', porAi: '3 a 5', aqui: '6' },
+      { label: 'Ensina quando não usar', porAi: 'raro', aqui: 'em todas as formações' },
+      { label: 'Ficha de atendimento pronta', porAi: 'não', aqui: 'incluída' },
+      { label: 'Certificado com código que valida online', porAi: 'varia', aqui: 'sim' },
+    ],
+    linhaPrecoLabel: 'Preço',
+    linhaPrecoAqui: 'R$ 37',
+    linhaPrecoPorAiTemplate: (min: number, max: number) => `R$ ${min} a R$ ${max}`,
+  },
   badges: [
     { p: 'Acesso<br>na hora' },
     { p: 'Pagamento<br>pela Hotmart' },

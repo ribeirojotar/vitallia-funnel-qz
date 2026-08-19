@@ -193,7 +193,7 @@ body{
       <h1>{tela2.bar.h1}</h1>
       <p>{tela2.bar.sub}</p>
     </div>
-    <div class="pips" id="pips"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pips" id="pips"><i></i><i></i><i></i><i></i><i></i><i></i></div>
   </header>
 
   <div class="feed" id="feed"></div>
@@ -212,7 +212,7 @@ import { FAIXA_REGIONAL } from '../config/oferta';
 const OPENING = tela2.opening;
 const OPENING_CTA = tela2.openingCta;
 const T = tela2.turns;
-const ORDER = ['interesse', 'nivel', 'objetivo', 'areas', 'uf'] as const;
+const ORDER = ['interesse', 'nivel', 'objetivo', 'areas', 'renda', 'uf'] as const;
 
 const STEP = { step: 2, step_name: 'diagnostico' };
 VT.track('step_view', STEP);
@@ -355,6 +355,10 @@ async function next(id: typeof ORDER[number]) {
     answers[t.id] = o.v;
     bubble(o.l, 'me');
     VT.track('quiz_answer', { ...STEP, question: t.id, answer: o.v });
+    // Q5 (renda): número que ela mesma escolheu, nunca afirmado pelo
+    // funil — cruzar com checkout_click decide se o criativo deve
+    // trazer mais gente com essa intenção declarada.
+    if (id === 'renda') VT.track('renda_declarada', { ...STEP, faixa: o.v });
     await wait(280);
     await say(t.reply);
     await wait(300);
@@ -367,9 +371,11 @@ async function next(id: typeof ORDER[number]) {
       next('objetivo');
     } else if (id === 'interesse') {
       next('nivel');
-    } else {
-      // objetivo
+    } else if (id === 'objetivo') {
       next('areas');
+    } else {
+      // renda
+      next('uf');
     }
   });
 }
@@ -396,7 +402,7 @@ async function runAreas() {
       await say([t.replyFewTemplate(complementar)]);
     }
     await wait(300);
-    next('uf');
+    next('renda');
   });
 }
 
@@ -430,7 +436,7 @@ function finish(regiao: string) {
   const perfil = PERFIL_POR_OBJETIVO[answers.objetivo] || PERFIL_POR_OBJETIVO.tudo;
 
   localStorage.setItem('vt_sim', JSON.stringify({
-    answers: { interesse: answers.interesse, nivel: answers.nivel, objetivo: answers.objetivo, areas: areasSelecionadas, uf: answers.uf },
+    answers: { interesse: answers.interesse, nivel: answers.nivel, objetivo: answers.objetivo, areas: areasSelecionadas, renda: answers.renda, uf: answers.uf },
     perfil, regiao, completed_at: new Date().toISOString(),
   }));
 
@@ -475,6 +481,11 @@ start();
   Memento Fitoterápico antes de publicar.
 
   ESTADO ENTREGUE ÀS TELAS SEGUINTES
-  localStorage 'vt_sim' → { answers: {interesse,nivel,objetivo,areas,uf}, perfil, regiao, completed_at }
+  localStorage 'vt_sim' → { answers: {interesse,nivel,objetivo,areas,renda,uf}, perfil, regiao, completed_at }
+
+  V2.1 — Q5 (RENDA) É NÚMERO DELA, NÃO NOSSO
+  Existe só para a tela 3 fazer aritmética com um valor que a própria
+  leitora escolheu (divisão por um preço de mercado verificável). Em
+  nenhum momento o funil afirma que ela vai atingir esse valor.
 */}
 </FunnelLayout>

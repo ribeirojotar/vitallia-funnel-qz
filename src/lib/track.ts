@@ -17,7 +17,8 @@
 // Eventos novos da V2 (9 telas + downsell):
 //   quiz_answer           — tela 2, por pergunta do diagnóstico
 //   areas_selected         — tela 2, Q4 — {count, areas[]}
-//   uf_selected             — tela 2, Q5 — geografia
+//   renda_declarada         — tela 2, Q5 — faixa que ela mesma escolheu
+//   uf_selected             — tela 2, Q6 — geografia
 //   condicao_resgatada     — tela 8
 //   checkout_click          — tela 9 e /downsell
 //   faq_open                — tela 9

@@ -49,6 +49,18 @@ h1{font-family:var(--display);font-weight:800;
 .block li{list-style:none;display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:var(--fg-dim)}
 .block li svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--accent)}
 
+/* ---- O que isso custa por área ---- */
+.custoNums{margin-top:12px;display:flex;gap:20px}
+.custoNums div{flex:1}
+.custoNums .num{font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--accent)}
+.custoNums .lab{margin-top:2px;font-size:11px;color:var(--fg-dim)}
+.custoMercado{margin-top:12px;padding-top:12px;border-top:1px solid var(--card-bd);font-size:12.5px;line-height:1.5;color:var(--fg-dim)}
+
+/* ---- Bloco de cena (saboaria/tintura) ---- */
+.cena p.linha{font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.48;color:var(--fg)}
+.cena p.linha + p.linha{margin-top:12px}
+.cena .entrega{margin-top:16px;padding-top:14px;border-top:1px solid var(--card-bd)}
+
 .foot{position:sticky;bottom:0;z-index:5;padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
   background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
 .foot button{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
@@ -85,6 +97,34 @@ h1{font-family:var(--display);font-weight:800;
       <p class="kicker">{tela6.comoFunciona.kicker}</p>
       <p class="lead">{tela6.comoFunciona.texto}</p>
     </section>
+
+    {/* Divisão, não contagem — ver comentário no topo do arquivo. */}
+    <section class="block">
+      <p class="kicker">{tela6.custoPorArea.kicker}</p>
+      <p class="lead">{tela6.custoPorArea.linha1}</p>
+      <div class="custoNums">
+        <div><p class="num">R$ 6,17</p><p class="lab">por formação</p></div>
+        <div><p class="num">R$ 0,31</p><p class="lab">por hora de aula</p></div>
+      </div>
+      <p class="custoMercado" id="custoMercado" style="display:none"></p>
+    </section>
+
+    {/* Só aparece para quem marcou saboaria ou tintura na Q4. */}
+    <section class="block cena" id="cenaBlock" style="display:none">
+      <p class="linha" id="cenaP1"></p>
+      <p class="linha" id="cenaP2"></p>
+      <div class="entrega">
+        <p class="kicker">{tela6.blocoCena.entregaKicker}</p>
+        <ul>
+          {tela6.blocoCena.entregaItens.map(item => (
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   </main>
 
   <div class="wrap foot">
@@ -98,10 +138,32 @@ h1{font-family:var(--display);font-weight:800;
 <script>
 import { VT } from '../lib/track';
 import { prefetch } from 'astro:prefetch';
+import { tela6 } from '../config/funnel';
+import { FAIXA_MERCADO } from '../config/oferta';
 
 const STEP = { step: 6, step_name: 'recebe' };
-VT.track('step_view', STEP);
+
+const sim = JSON.parse(localStorage.getItem('vt_sim') || '{}');
+const areas: string[] = sim.answers?.areas || [];
+
+VT.track('step_view', { ...STEP, areas });
 prefetch('/7-prova');
+
+// ⛔ Sem FAIXA_MERCADO preenchido (10 a 15 prints datados), este
+// parágrafo não renderiza — a divisão acima fica em pé sozinha.
+if (FAIXA_MERCADO) {
+  const el = document.getElementById('custoMercado')!;
+  el.style.display = '';
+  el.textContent = tela6.custoPorArea.faixaMercadoTemplate(FAIXA_MERCADO[0], FAIXA_MERCADO[1]);
+}
+
+// Bloco de cena — só para quem marcou saboaria ou tintura na Q4. Essa
+// parte da compradora não quer atender ninguém, quer marca própria.
+if (areas.includes('saboaria') || areas.includes('tintura')) {
+  document.getElementById('cenaBlock')!.style.display = '';
+  document.getElementById('cenaP1')!.textContent = tela6.blocoCena.paragrafos[0];
+  document.getElementById('cenaP2')!.textContent = tela6.blocoCena.paragrafos[1];
+}
 
 let advanced = false;
 function reportExit() { if (!advanced) VT.track('step_exit', STEP); }
@@ -117,4 +179,20 @@ document.getElementById('advance')!.addEventListener('click', () => {
   }, 420);
 });
 </script>
+
+{/*
+  V2.1 — O QUE ISSO CUSTA POR ÁREA
+  Divisão, não contagem: o concorrente tem 5 cursos e 20 bônus, e numa
+  disputa de quantidade a gente perde — e ainda reforça "barato
+  demais, deve ser fraco". A divisão resolve pelo avesso: não é
+  barato, é custo diluído em seis áreas, e é aritmética que ela
+  confere sozinha. R$ 6,17 e R$ 0,31 são fixos (R$ 37 ÷ 6 formações e
+  ÷ 120 horas) — não recalcular a partir de PRECO.funil sem atualizar
+  aqui também. ⛔ Nunca nomear concorrente — a faixa de mercado dá o
+  mesmo efeito com zero exposição.
+
+  BLOCO DE CENA
+  Descreve atividade, não resultado financeiro — nenhuma frase afirma
+  quanto ela vai vender ou ganhar.
+*/}
 </FunnelLayout>
