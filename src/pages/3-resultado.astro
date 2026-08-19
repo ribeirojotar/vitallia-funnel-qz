@@ -1,6 +1,17 @@
 ---
 import FunnelLayout from '../layouts/FunnelLayout.astro';
+import Depoimento from '../components/Depoimento.astro';
 import { tela3 } from '../config/funnel';
+import type { Prova } from '../config/provas';
+
+// Astro renderiza este componente uma vez, no build — não dá pra
+// escolher "o depoimento do perfil dela" em tempo de build, porque o
+// perfil só existe no localStorage do navegador, depois do diagnóstico.
+// Por isso pré-renderizamos os cinco (um por valor possível de
+// `objetivo`), cada um escondido, e o script decide qual (se algum)
+// revelar. Se o array em provas.ts estiver vazio, os cinco continuam
+// vazios e escondidos — nenhum aparece.
+const PERFIS: Prova['perfil'][] = ['casa', 'aprender', 'atender', 'produtos', 'tudo'];
 
 const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
 ---
@@ -102,6 +113,16 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justi
         <div class="unlock" id="multiAreas" style="display:none"></div>
       </div>
 
+      {/* Prova social casada com o perfil — ver comentário no frontmatter.
+          Cada bloco começa escondido e só o do perfil dela pode aparecer. */}
+      <div id="depoimentoSlot">
+        {PERFIS.map(p => (
+          <div class="depoimentoPerfil" data-perfil={p} style="display:none">
+            <Depoimento perfil={p} />
+          </div>
+        ))}
+      </div>
+
       <div class="cta">
         <button id="advance">
           {tela3.cta}
@@ -151,6 +172,15 @@ if (!sim.completed_at) {
     const el = document.getElementById('multiAreas')!;
     el.style.display = '';
     el.innerHTML = `<b>${tela3.multiAreasBlocoTemplate(areas.length)}</b> ${tela3.multiAreasBloco}`;
+  }
+
+  // Prova social casada com o perfil: revela só o bloco do `objetivo`
+  // dela, e só se ele tiver algo real dentro (o array em provas.ts
+  // pode estar vazio, e nesse caso os cinco continuam escondidos).
+  const objetivo = sim.answers?.objetivo;
+  if (objetivo) {
+    const bloco = document.querySelector<HTMLElement>(`.depoimentoPerfil[data-perfil="${objetivo}"]`);
+    if (bloco && bloco.children.length > 0) bloco.style.display = '';
   }
 
   let advanced = false;

@@ -1,5 +1,6 @@
 ---
 import FunnelLayout from '../layouts/FunnelLayout.astro';
+import Depoimento from '../components/Depoimento.astro';
 import { tela9 } from '../config/funnel';
 
 const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
@@ -136,6 +137,10 @@ main{flex:1;padding:calc(env(safe-area-inset-top) + 22px) 0 26px}
       <p class="pay">{tela9.pay}</p>
     </article>
 
+    {/* Prova social — um só, curto, ao lado do preço. Não renderiza
+        nada até existir depoimento real e autorizado. */}
+    <Depoimento limit={1} variant="compacta" />
+
     <div class="badges">
       {tela9.badges.map(b => (
         <div>
@@ -263,9 +268,12 @@ window.addEventListener('pagehide', reportExit);
      desconto da tela 8.
 
   O QUE NÃO ENTRA NESTA TELA
-  Nenhum argumento novo. Nenhum bônus surpresa, nenhum depoimento
-  inédito, nenhuma estatística. Argumento novo no fechamento cria
-  objeção nova, e não há mais tela para respondê-la.
+  Nenhum argumento novo, nenhum bônus surpresa, nenhuma estatística.
+  Argumento novo no fechamento cria objeção nova, e não há mais tela
+  para respondê-la. O depoimento aqui (REVISAO-V2.md, tela 7) é
+  exceção deliberada, não argumento novo: é reforço curto do que já
+  apareceu nas telas 3 e/ou 7, não uma prova inédita — por isso é
+  "um só, curto, ao lado do preço", não um bloco novo de prova.
 
   TODA A DEFESA REGULATÓRIA MORA NO FAQ
   Item 2. Não espalhar pelas telas anteriores — na v1 isso ocupava

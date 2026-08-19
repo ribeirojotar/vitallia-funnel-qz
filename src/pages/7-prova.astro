@@ -1,5 +1,6 @@
 ---
 import FunnelLayout from '../layouts/FunnelLayout.astro';
+import Depoimento from '../components/Depoimento.astro';
 import { tela7 } from '../config/funnel';
 
 const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
@@ -79,6 +80,9 @@ h1 em{font-style:normal;color:var(--accent)}
   font-size:11px;line-height:1.55;color:var(--fg-dim)}
 .out.err .stamp{color:#D98A72}
 
+/* ---- Certificado (colado ao validador) ---- */
+.cert{margin-top:13px}
+
 /* ---- Mídia ---- */
 .media{background:var(--card);border:1px solid var(--card-bd);border-radius:18px;overflow:hidden}
 .slot{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;text-align:center;
@@ -131,6 +135,17 @@ h1 em{font-style:normal;color:var(--accent)}
         </div>
         <div class="out" id="out"><div class="inner" id="inner"></div></div>
       </div>
+
+      {/* Certificado — colada ao validador. Imagem sozinha não prova
+          nada; imagem + validador funcionando é que é prova. */}
+      <div class="cert">
+        <div class="media">
+          <div class="slot">
+            <span>{tela7.blocks.certificado.slotLabel}<br />{tela7.blocks.certificado.campos.join(' · ')}</span>
+          </div>
+          <p>{tela7.blocks.certificado.caption}</p>
+        </div>
+      </div>
     </section>
 
     {/* 2. a prova que ela vê — trecho de aula + página do caderno */}
@@ -145,6 +160,12 @@ h1 em{font-style:normal;color:var(--accent)}
         ))}
       </div>
     </section>
+
+    {/* Prova social — bloco principal. Não renderiza NADA — nem esta
+        margem — até existir depoimento real e autorizado em
+        src/config/provas.ts. O componente cuida do próprio espaçamento
+        por isso, sem wrapper aqui. */}
+    <Depoimento titulo="O que dizem as alunas" />
 
     {/* 3. base legal curta — a defesa completa do MEC mora no FAQ da tela 9 */}
     <p class="legalcurta">{tela7.legalCurta}</p>

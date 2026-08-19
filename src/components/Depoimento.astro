@@ -1,0 +1,71 @@
+---
+// ============================================================
+// <Depoimento> — prova social reutilizável (telas 3, 7 e 9)
+// ------------------------------------------------------------
+// ⛔ Renderiza NADA — nem título de seção, nem borda, nem "em breve"
+// — quando não sobra nenhum item depois dos filtros abaixo. Enquanto
+// não houver depoimento real e autorizado, o visitante não vê
+// nenhum vestígio de que esta seção existe.
+//
+// Uso:
+//   <Depoimento />                      — bloco principal (tela 7)
+//   <Depoimento perfil={perfil} />      — casado com o quiz (tela 3)
+//   <Depoimento limit={1} variant="compacta" /> — ao lado do preço (tela 9)
+//
+// Estilo é auto-contido (não usa is:global): o mesmo componente
+// entra em telas com paletas diferentes (papel na 3 e na 9, verde-
+// tinta escuro na 7) sem herdar nem vazar CSS de nenhuma delas.
+// ============================================================
+import { PROVAS, type Prova } from '../config/provas';
+
+interface Props {
+  perfil?: Prova['perfil'];
+  limit?: number;
+  variant?: 'padrao' | 'compacta';
+  titulo?: string;
+}
+
+const { perfil, limit, variant = 'padrao', titulo } = Astro.props;
+
+let lista: Prova[] = PROVAS.filter(p => p.autorizado);
+if (perfil) lista = lista.filter(p => p.perfil === perfil);
+if (limit) lista = lista.slice(0, limit);
+---
+
+{lista.length > 0 && (
+  <div class:list={['depoimentos', `depoimentos--${variant}`]}>
+    {titulo && <p class="titulo">{titulo}</p>}
+    {lista.map(p => (
+      <article class="depoimento">
+        {p.tipo === 'foto' && <img class="midia" src={p.src} alt={`Foto de ${p.nome}`} loading="lazy" />}
+        {p.tipo === 'video' && <video class="midia" src={p.src} controls preload="none" />}
+        {p.tipo === 'audio' && <audio class="midia audio" src={p.src} controls preload="none" />}
+        <p class="texto">"{p.texto}"</p>
+        <p class="autor">{p.nome} <span>· {p.cidade}</span></p>
+      </article>
+    ))}
+  </div>
+)}
+
+<style>
+.depoimentos{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.depoimentos .titulo{font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;font-weight:700;color:#8A8271}
+
+.depoimento{
+  background:#FFFDF7;border:1px solid #E5DFCE;border-radius:16px;
+  padding:16px 17px;color:#2A2318;
+  font-family:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+}
+.depoimento .midia{width:100%;border-radius:10px;display:block;margin-bottom:11px;background:#000}
+.depoimento .midia.audio{background:none;height:40px}
+.depoimento .texto{font-size:14px;line-height:1.55;font-style:italic;color:#3A3225}
+.depoimento .autor{margin-top:9px;font-size:12px;font-weight:700;color:#7C5E22}
+.depoimento .autor span{font-weight:500;color:#8A8271}
+
+/* variante compacta — um item só, texto curto, sem mídia, ao lado do preço */
+.depoimentos--compacta .depoimento{
+  padding:13px 15px;display:flex;flex-direction:column;gap:2px;
+}
+.depoimentos--compacta .depoimento .midia{display:none}
+.depoimentos--compacta .depoimento .texto{font-size:13px}
+</style>

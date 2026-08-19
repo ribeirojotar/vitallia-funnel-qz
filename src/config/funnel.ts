@@ -297,6 +297,26 @@ export const tela7 = {
       hint: 'Digita o código de demonstração abaixo e vê o que acontece. É o mesmo sistema que valida o certificado de qualquer aluna.',
       buttonLabel: 'Validar',
     },
+    // Colada ao validador (não é um bloco numerado à parte): imagem
+    // sozinha não prova nada — qualquer um monta uma. Imagem + validador
+    // funcionando é que é prova, um confirma o outro. Por isso não vai
+    // na tela 4 (só a frase de consequência) nem na 6 (uma linha no
+    // empilhamento). ⛔ Sem brasão, laurel, escudo, fita ou selo de
+    // associação no desenho — isso faria a peça imitar documento oficial,
+    // e aí o texto honesto não salva.
+    certificado: {
+      slotLabel: 'slot · imagem do certificado',
+      campos: [
+        'Nome completo',
+        'Nome da formação',
+        'Carga horária discriminada',
+        'Data',
+        'Código com QR',
+        'Assinatura',
+        '"Certificado de conclusão de curso livre, nos termos da Lei 9.394/96 e do Decreto 5.154/2004"',
+      ],
+      caption: 'Sem brasão, laurel, escudo ou selo de associação — só o documento, exatamente como ele existe.',
+    },
     midia: {
       tagNumber: '02',
       tagLabel: 'Prova que você vê',
