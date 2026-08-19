@@ -1,0 +1,274 @@
+---
+import FunnelLayout from '../layouts/FunnelLayout.astro';
+import { tela9 } from '../config/funnel';
+
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
+---
+
+<FunnelLayout title={tela9.title} fontHref={FONT_HREF}>
+<style is:global>
+/* ============================================================
+   VITALLIA V2 · Tela 9 de 9 — "A oferta"
+   Um card só — sem comparação, sem "qual das duas é você". A v1
+   bifurcava em dois planos porque a simulação roteava por identidade;
+   aqui o produto inteiro já foi apresentado nas telas 4 a 6, então a
+   decisão é binária simples: entra ou não entra.
+
+   Toda a defesa regulatória (MEC/conselho) mora no FAQ, item 2 — não
+   espalhada pelas telas anteriores, que é o que matava a energia da
+   oferta na v1.
+
+   Gatilho do downsell: botão voltar interceptado por history API
+   (ver script) — não exit-intent de mouse, que não existe em celular.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+
+  --paper:#EFEADD;
+  --paper-2:#F7F3E9;
+  --ink:#16241D;
+  --ink-dim:#5E6B60;
+  --card:#FFFFFF;
+  --card-bd:#E2DCCC;
+  --green:#2E7D52;
+  --amber:#B8802A;
+  --amber-bg:#FBF1DC;
+  --amber-bd:#E2C489;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:linear-gradient(178deg,var(--paper-2) 0%,var(--paper) 46%)}
+.thread{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--amber);opacity:.6;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 22px) 0 26px}
+
+.strip{display:none;align-items:center;justify-content:space-between;gap:12px;
+  padding:11px 14px;border-radius:13px;
+  background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber);
+  font-size:12px;font-weight:700}
+.strip.on{display:flex}
+.strip .code{padding:3px 9px;border-radius:6px;background:rgba(184,128,42,.14);
+  letter-spacing:.16em;font-size:10.5px}
+.strip .clock{display:flex;align-items:center;gap:5px;white-space:nowrap}
+.strip svg{width:12px;height:12px}
+
+.plan{margin-top:20px;background:var(--card);border:2px solid var(--green);border-radius:22px;
+  padding:22px 19px;box-shadow:0 8px 26px rgba(46,125,82,.14)}
+.plan h1{font-family:var(--display);font-weight:800;font-size:20px;line-height:1.22;letter-spacing:-.02em}
+.plan .price{margin-top:14px;display:flex;align-items:baseline;gap:9px}
+.plan .price .now{font-family:var(--display);font-weight:800;font-size:40px;letter-spacing:-.04em;line-height:1;color:var(--green)}
+.plan .price .was{font-size:15px;color:var(--ink-dim);text-decoration:line-through}
+.plan .once{margin-top:4px;font-size:11.5px;color:var(--ink-dim);font-weight:600}
+.plan ul{margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.plan li{list-style:none;display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.45}
+.plan li svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--green)}
+.plan button{margin-top:19px;width:100%;height:58px;border:0;border-radius:29px;cursor:pointer;
+  font-family:var(--ui);font-size:16px;font-weight:800;letter-spacing:-.01em;
+  background:var(--green);color:#fff;box-shadow:0 6px 20px rgba(46,125,82,.26)}
+.plan .pay{margin-top:9px;text-align:center;font-size:11px;color:var(--ink-dim)}
+
+.badges{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.badges div{background:var(--card);border:1px solid var(--card-bd);border-radius:14px;
+  padding:14px 8px;text-align:center}
+.badges .ic{width:30px;height:30px;margin:0 auto 8px;border-radius:9px;
+  background:rgba(46,125,82,.10);color:var(--green);
+  display:flex;align-items:center;justify-content:center}
+.badges svg{width:15px;height:15px}
+.badges p{font-size:10px;line-height:1.35;font-weight:800;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--ink-dim)}
+
+.warranty{margin-top:18px;padding:16px 17px;border-radius:16px;
+  background:var(--card);border:1px solid var(--card-bd);
+  display:flex;gap:13px;align-items:flex-start}
+.warranty .ic{flex:none;width:32px;height:32px;border-radius:10px;
+  background:rgba(46,125,82,.10);color:var(--green);
+  display:flex;align-items:center;justify-content:center}
+.warranty .ic svg{width:17px;height:17px}
+.warranty h4{font-size:14px;font-weight:800;letter-spacing:-.012em}
+.warranty p{margin-top:5px;font-size:12.5px;line-height:1.52;color:var(--ink-dim)}
+.warranty b{color:var(--ink);font-weight:700}
+
+.faq{margin-top:18px;border-radius:16px;overflow:hidden;
+  background:var(--card);border:1px solid var(--card-bd)}
+.faq details{border-top:1px solid var(--card-bd)}
+.faq details:first-child{border-top:0}
+.faq summary{padding:15px 16px;cursor:pointer;list-style:none;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  font-size:13.5px;font-weight:700;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:19px;font-weight:600;color:var(--ink-dim);
+  line-height:1;transition:transform .2s ease}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq .a{padding:0 16px 15px;font-size:13px;line-height:1.55;color:var(--ink-dim)}
+.faq .a a{color:var(--green)}
+
+.fine{padding:20px 0 calc(env(safe-area-inset-bottom) + 20px);text-align:center;
+  font-size:9.5px;line-height:1.75;color:var(--ink-dim);opacity:.75}
+</style>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+
+    <div class="strip" id="strip">
+      <span>{tela9.stripLabel} <span class="code" id="code"></span></span>
+      <span class="clock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span id="clock"></span>
+      </span>
+    </div>
+
+    <article class="plan">
+      <h1>{tela9.headline}</h1>
+      <div class="price">
+        <span class="now">R$ 37</span>
+        <span class="was">R$ 97</span>
+      </div>
+      <p class="once">{tela9.priceOnce}</p>
+      <ul>
+        {tela9.includes.map(i => (
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>
+        ))}
+      </ul>
+      <button id="checkout">{tela9.cta}</button>
+      <p class="pay">{tela9.pay}</p>
+    </article>
+
+    <div class="badges">
+      {tela9.badges.map(b => (
+        <div>
+          <span class="ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13H12l-1 9 8.5-11H13z"/></svg>
+          </span>
+          <p set:html={b.p} />
+        </div>
+      ))}
+    </div>
+
+    <div class="warranty">
+      <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l7.5 3v6c0 4.4-3.1 8.4-7.5 10-4.4-1.6-7.5-5.6-7.5-10v-6z"/><path d="M9 12l2 2 4-4.5"/></svg></span>
+      <div>
+        <h4>{tela9.warranty.h4}</h4>
+        <p set:html={tela9.warranty.p} />
+      </div>
+    </div>
+
+    <div class="faq" id="faq">
+      {tela9.faq.map(item => (
+        <details>
+          <summary>{item.q}</summary>
+          <p class="a" data-a-template={'aTemplate' in item ? 'true' : undefined}>{'a' in item ? item.a : ''}</p>
+        </details>
+      ))}
+    </div>
+
+    <p class="fine" set:html={tela9.fine} />
+
+  </main>
+</div>
+
+<script>
+import { VT } from '../lib/track';
+import { tela9 } from '../config/funnel';
+import { CHECKOUT, LINK_AVULSO, PARCELA, CONTATO } from '../config/oferta';
+
+const STEP = { step: 9, step_name: 'oferta' };
+
+const cond = JSON.parse(localStorage.getItem('vt_cond') || '{}');
+VT.track('step_view', { ...STEP, code: cond.code || null });
+
+if (cond.code) {
+  document.getElementById('code')!.textContent = cond.code;
+  document.getElementById('strip')!.classList.add('on');
+  if (cond.expira_em) relogio(new Date(cond.expira_em).getTime());
+}
+
+function relogio(ate: number) {
+  const el = document.getElementById('clock')!;
+  (function t() {
+    const d = ate - Date.now();
+    if (d <= 0) { el.textContent = 'expirada'; return; }
+    const h = Math.floor(d / 3.6e6), m = Math.floor(d % 3.6e6 / 6e4), s = Math.floor(d % 6e4 / 1000);
+    el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    setTimeout(t, 1000);
+  })();
+}
+
+/* preenche o FAQ — o item 1 usa o link real da oferta avulsa */
+document.querySelectorAll('#faq .a').forEach((el, i) => {
+  if (i === 0) el.innerHTML = tela9.faq[0].aTemplate!(LINK_AVULSO);
+});
+
+if (PARCELA) document.querySelector('.plan .pay')!.textContent = PARCELA + ' · acesso na hora';
+
+/* Qual pergunta ela abre é a objeção viva no segundo do clique. */
+document.querySelectorAll('.faq details').forEach((d, i) => {
+  d.addEventListener('toggle', () => {
+    if ((d as HTMLDetailsElement).open) VT.track('faq_open', {
+      ...STEP, pergunta: i + 1,
+      texto: d.querySelector('summary')!.textContent,
+    });
+  });
+});
+
+/* ---- checkout ---- */
+document.getElementById('checkout')!.addEventListener('click', () => {
+  VT.track('checkout_click', { ...STEP, code: cond.code || null });
+
+  if (!CHECKOUT.completo) {
+    console.log('→ checkout: CHECKOUT.completo ainda não foi preenchido em src/config/oferta.ts');
+    return;
+  }
+  const u = new URL(CHECKOUT.completo);
+  u.searchParams.set('sck', VT.sid);
+  if (cond.code) u.searchParams.set('off', cond.code);
+  console.log('→ checkout:', u.toString());
+  // window.location.href = u.toString();
+});
+
+/* ============================================================
+   DOWNSELL — botão voltar do Android
+   Não usa exit-intent de mouse: não existe em celular, que é onde
+   está quase todo o tráfego. Dispara uma vez por sessão.
+   ============================================================ */
+if (!sessionStorage.getItem('vt_downsell_shown')) {
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', function onBack() {
+    if (sessionStorage.getItem('vt_downsell_shown')) return;
+    sessionStorage.setItem('vt_downsell_shown', '1');
+    VT.track('downsell_shown', STEP);
+    history.pushState(null, '', location.href);
+    window.location.href = '/downsell';
+  });
+}
+
+function reportExit() { VT.track('step_exit', { ...STEP, code: cond.code || null }); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
+window.addEventListener('pagehide', reportExit);
+</script>
+
+{/*
+  O QUE FALTA DO SEU LADO PARA ESTA TELA FUNCIONAR
+
+  1. CHECKOUT.completo em src/config/oferta.ts — o link real da Hotmart.
+  2. O cupom: o parâmetro 'off' precisa existir na Hotmart com o código
+     gerado na tela 8. Se não existir, ela chega no checkout, vê o
+     preço cheio, e a tela 8 vira encenação — o pior desfecho possível
+     pro funil inteiro.
+  3. LINK_AVULSO em src/config/oferta.ts — sem ele, a primeira pergunta
+     do FAQ ("Esse preço de R$ 97 é real mesmo?") não tem como ser
+     verificada, e é exatamente essa verificação que sustenta o
+     desconto da tela 8.
+
+  O QUE NÃO ENTRA NESTA TELA
+  Nenhum argumento novo. Nenhum bônus surpresa, nenhum depoimento
+  inédito, nenhuma estatística. Argumento novo no fechamento cria
+  objeção nova, e não há mais tela para respondê-la.
+
+  TODA A DEFESA REGULATÓRIA MORA NO FAQ
+  Item 2. Não espalhar pelas telas anteriores — na v1 isso ocupava
+  três telas inteiras e matava a energia da oferta.
+*/}
+</FunnelLayout>

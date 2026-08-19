@@ -1,20 +1,25 @@
 ---
 import FunnelLayout from '../layouts/FunnelLayout.astro';
-import { tela01 } from '../config/funnel-angle';
+import { tela1 } from '../config/funnel-angle';
 
 const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
 ---
 
-<FunnelLayout title={tela01.title} description={tela01.description} fontHref={FONT_HREF} htmlDataTheme="dark">
+<FunnelLayout title={tela1.title} description={tela1.description} fontHref={FONT_HREF} htmlDataTheme="dark">
 <style is:global>
 /* ============================================================
-   VITALLIA · Tela 1 de 12 — "A pergunta"
+   VITALLIA V2 · Tela 1 de 9 — "Gancho + produto nomeado"
    Único trabalho desta tela: fazer ela arrastar.
 
    Direção: o frasco de tintura à noite. Verde-tinta, luz âmbar,
    tipografia de rótulo de botica — sans condensada pesada para o
-   fato, serifa italiana só no giro emocional ("E agora?").
+   fato, serifa italiana só no giro emocional.
    Sem foto: em tráfego pago cada 100ms de LCP custa conversão.
+
+   V2: a v1 revelava o produto só na tela 11 de um funil de mudança
+   de crença. Aqui o produto já é nomeado na headline — a compradora
+   já quer comprar um curso; o diagnóstico que segue qualifica e
+   personaliza, não convence.
    ============================================================ */
 
 :root{
@@ -78,8 +83,7 @@ body{
 
 .wrap{position:relative;z-index:2;max-width:600px;width:100%;margin:0 auto;padding:0 22px}
 
-/* ---- Pill (posição do "+1.327 pessoas" da referência,
-        ocupada por fato verificável em vez de contador) ---- */
+/* ---- Pill ---- */
 .top{padding-top:calc(env(safe-area-inset-top) + 22px);display:flex;justify-content:center}
 .pill{
   display:inline-flex;align-items:center;gap:8px;
@@ -117,11 +121,13 @@ h1 .turn{
 .sub{
   margin-top:20px;
   font-size:clamp(15px,4.1vw,17px); line-height:1.52;
-  color:var(--fg-dim); max-width:33ch;
+  color:var(--fg-dim); max-width:38ch;
 }
 .sub b{color:var(--fg);font-weight:600}
 
-/* ---- Caixa de negação (bloco próprio, como na referência) ---- */
+/* ---- Corpo (pitch das 5 perguntas), mesmo tratamento visual da
+   antiga caixa de negação — o âmbar aqui é o acento da marca, não
+   um alerta. ---- */
 .note{
   margin-top:24px;
   padding:16px 18px;
@@ -206,33 +212,33 @@ h1 .turn{
 
 <div class="stage" id="stage">
 
-  {/* Sem barra de progresso: anunciar 12 etapas a quem acabou de chegar
-       é anunciar trabalho. O progresso entra a partir da tela 4. */}
+  {/* Sem barra de progresso: anunciar 9 etapas a quem acabou de chegar
+       é anunciar trabalho. */}
   <div class="top wrap rise d1">
     <span class="pill">
-      <i class="dot"></i> <b>{tela01.pill.fact}</b> {tela01.pill.rest}
+      <i class="dot"></i> <b>{tela1.pill.fact}</b> {tela1.pill.rest}
     </span>
   </div>
 
   <main class="wrap">
     <h1>
-      {tela01.headline.lines.map((line, i) => (
+      {tela1.headline.lines.map((line, i) => (
         <span class:list={['ln', 'rise', `d${i + 2}`]}>{line}</span>
       ))}
-      <span class="turn rise d6">{tela01.headline.turn}</span>
+      <span class="turn rise d4">{tela1.headline.turn}</span>
     </h1>
 
-    <p class="sub rise d7" set:html={tela01.sub} />
+    <p class="sub rise d5">{tela1.sub}</p>
 
-    <p class="note rise d8" set:html={tela01.note} />
+    <p class="note rise d6">{tela1.corpo}</p>
   </main>
 
-  <div class="foot wrap rise d8">
+  <div class="foot wrap rise d7">
     <div class="slider" id="slider" role="button" tabindex="0"
-         aria-label={tela01.slider.ariaLabel}>
+         aria-label={tela1.slider.ariaLabel}>
       <i class="trail" id="trail"></i>
       <div class="handle" id="handle">
-        {tela01.slider.handleLabel}
+        {tela1.slider.handleLabel}
         <span class="arrow">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -242,28 +248,20 @@ h1 .turn{
       </div>
     </div>
 
-    <p class="hint">{tela01.slider.hint}</p>
+    <p class="hint">{tela1.slider.hint}</p>
     <p class="chev" aria-hidden="true"><i>›</i><i>›</i><i>›</i></p>
-    <p class="micro">{tela01.micro}</p>
+    <p class="micro">{tela1.micro}</p>
   </div>
 
-  {/*
-    FONTES DOS NÚMEROS DESTA TELA
-    · "71 plantas medicinais na lista oficial do SUS" — RENISUS, Ministério da Saúde.
-      Rodapé do funil deve trazer a fonte e a nota de ausência de vínculo institucional.
-    · "3 perguntas obrigatórias" — precisa bater exatamente com o conteúdo do Curso 6
-      e da simulação da Tela 5. Se o curso ensina 4, o número aqui é 4.
-      Número de tela 1 que não se confirma depois é a coisa mais cara que existe.
-  */}
 </div>
 
 <script>
 import { VT, withVariant } from '../lib/track';
 import { prefetch } from 'astro:prefetch';
 
-const STEP = { step: 1, step_name: 'a_pergunta' };
+const STEP = { step: 1, step_name: 'gancho' };
 VT.track('step_view', withVariant(STEP));
-prefetch('/2');
+prefetch('/2-diagnostico');
 
 let advanced = false, touched = false;
 function reportExit() {
@@ -312,7 +310,7 @@ function complete() {
   VT.track('step_advance', withVariant(STEP));
   document.getElementById('stage')!.classList.add('leaving');
   setTimeout(() => {
-    window.location.href = `/2?s=${VT.sid}`;
+    window.location.href = `/2-diagnostico?s=${VT.sid}`;
   }, 480);
 }
 

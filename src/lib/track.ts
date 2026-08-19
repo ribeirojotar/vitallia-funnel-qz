@@ -1,12 +1,12 @@
 // ============================================================
 // VT — camada de tracking do funil
 // ------------------------------------------------------------
-// Extraído das 12 telas, onde este objeto vinha duplicado
+// Extraído das 12 telas da v1, onde este objeto vinha duplicado
 // (copiado e colado) em cada arquivo. Um sessionId por lead,
 // persistido, enviado em todo evento e anexado à URL do checkout.
 // É o que liga a compra ao caminho.
 //
-// Eventos por tela:
+// Eventos padrão por tela:
 //   step_view     — denominador
 //   cta_touch     — começou a interagir e não terminou (diagnóstico)
 //   step_advance  — numerador
@@ -14,11 +14,22 @@
 //
 // Passagem da tela N = step_advance(N) / step_view(N)
 //
-// Os três disparos de Meta Pixel abaixo também vinham duplicados,
-// cada um em uma tela diferente (1, 10 e 12) — "só os 3 sinais de
-// otimização, nunca os 12", como o comentário original da tela 1
-// registrava. Ficam centralizados aqui porque dependem só do nome
-// do evento, não de nada específico da tela que o disparou.
+// Eventos novos da V2 (9 telas + downsell):
+//   quiz_answer           — tela 2, por pergunta do diagnóstico
+//   areas_selected         — tela 2, Q4 — {count, areas[]}
+//   uf_selected             — tela 2, Q5 — geografia
+//   condicao_resgatada     — tela 8
+//   checkout_click          — tela 9 e /downsell
+//   faq_open                — tela 9
+//   downsell_shown/taken   — /downsell
+//
+// Meta Pixel — só 4 sinais de otimização, nunca todo o resto:
+// ViewContent, AddToCart, InitiateCheckout e Purchase. Os três
+// primeiros disparam abaixo, amarrados só ao nome do evento (não a
+// nenhuma tela específica). Purchase NÃO tem trigger aqui — ele
+// acontece depois do checkout na Hotmart, fora das rotas deste
+// projeto; precisa de webhook da Hotmart ou de uma página de
+// obrigado, nenhuma das quais existe nesta lista de rotas.
 // ============================================================
 
 export type TrackProps = Record<string, unknown>;
@@ -64,7 +75,9 @@ function track(event: string, props: TrackProps = {}): void {
   // 3. PostHog
   window.posthog?.capture(event, payload);
 
-  // 4. Meta Pixel — só os 3 sinais de otimização, nunca os 12
+  // 4. Meta Pixel — só os 4 sinais de otimização (ver comentário do
+  // topo do arquivo). Purchase fica de fora: não há rota de obrigado
+  // neste projeto para dispará-lo.
   if (event === 'step_view' && props.step === 1) window.fbq?.('track', 'ViewContent');
   if (event === 'condicao_resgatada') window.fbq?.('track', 'AddToCart');
   if (event === 'checkout_click') window.fbq?.('track', 'InitiateCheckout');

@@ -1,27 +1,32 @@
 ---
 import FunnelLayout from '../layouts/FunnelLayout.astro';
-import { tela10 } from '../config/funnel';
+import { tela8 } from '../config/funnel';
 
 const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap';
 ---
 
-<FunnelLayout title={tela10.title} fontHref={FONT_HREF} bodyDataPaleta={tela10.paleta}>
+<FunnelLayout title={tela8.title} fontHref={FONT_HREF} bodyDataPaleta={tela8.paleta}>
 <style is:global>
 /* ============================================================
-   VITALLIA · Tela 10 de 12 — "A condição"
-   Trabalho: transformar preço em GANHO CONQUISTADO.
-   Pico emocional imediatamente antes da revelação do produto.
+   VITALLIA V2 · Tela 8 de 9 — "A condição" (O CUPOM)
+   Mantém a mecânica inteira da tela-10 (v1): paleta lime, cartão
+   girando 1080°, som de prêmio sintetizado, confete canvas, botão
+   de mudo, prefers-reduced-motion. Só o que é revelado muda: 62% OFF
+   (de R$ 97 por R$ 37) no lugar do material/desconto configurável.
 
-   Da referência: quebra total de paleta, cartão inclinado, giro,
-   confete, som, botão escuro sobre fundo saturado.
+   ⛔ Sem link para a página avulsa nesta tela — link no pico emocional
+   é vazamento. A verificação do preço de tabela mora no FAQ da tela 9,
+   onde o clique é ato deliberado de quem desconfia.
+   ⛔ Sem contador de vagas, sem número por estado, sem "restam N".
 
-   Contra a referência:
-   · sem contador de "restam 39 vouchers" — número inventado
-   · sem 85%: preço de tabela de R$ 247 nunca existiu
-   · o código NÃO é decoração. É gerado da sessão, é único dela,
-     e vai como parâmetro no link do checkout. Cupom de verdade.
-   · o prazo é contado do resgate real dela e precisa expirar de
-     verdade no back-end. Se você honrar depois, era mentira.
+   V2: a v1 tinha um ramo inteiro pra quem "pulou a simulação". Não
+   existe mais — o diagnóstico (tela 2) é obrigatório e linear no
+   funil novo, então esta tela sempre mostra o caminho de quem chegou
+   até aqui.
+
+   Pré-requisito operacional: R$ 97 precisa ser o preço real da
+   formação completa na ofertaai.shop, praticado e mantido — sem
+   isso, o desconto é fictício e a tela vira encenação.
    ============================================================ */
 :root{
   --ui:"Archivo",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
@@ -29,9 +34,7 @@ const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500
   --card:#FFFDF7;
   --dark:#10170A;
 }
-/* ouro: quebra de paleta mantendo o âmbar do funil inteiro */
 [data-paleta="ouro"]{ --prize:#E8B03F; --prize-2:#F2C766; --deco:rgba(32,24,10,.13); }
-/* lime da referência — paleta ativa */
 [data-paleta="lima"]{ --prize:#C8EE41; --prize-2:#DAF869; --deco:rgba(18,26,10,.15); }
 
 *{box-sizing:border-box;margin:0;padding:0}
@@ -46,7 +49,6 @@ body{font-family:var(--ui);-webkit-font-smoothing:antialiased;background:var(--p
 
 canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:20}
 
-/* enfeites flutuantes */
 .deco{position:absolute;color:var(--deco);pointer-events:none;z-index:0}
 .deco svg{width:100%;height:100%}
 .d1{width:52px;height:52px;top:22%;left:5%;transform:rotate(-18deg)}
@@ -62,7 +64,6 @@ h1{font-weight:900;font-size:clamp(29px,8.4vw,40px);line-height:1.05;
 .sub{margin-top:12px;font-size:14px;line-height:1.5;color:var(--ink);opacity:.72;font-weight:500}
 .sub b{opacity:1;font-weight:800}
 
-/* ---- Cartão ---- */
 .holder{position:relative;z-index:2;width:100%;max-width:290px;perspective:1400px;margin:6px 0}
 .card{position:relative;width:100%;aspect-ratio:5/7;transform-style:preserve-3d;
   transform:rotate(-4deg);transition:transform 1.05s cubic-bezier(.5,.05,.2,1)}
@@ -89,7 +90,6 @@ h1{font-weight:900;font-size:clamp(29px,8.4vw,40px);line-height:1.05;
 .bars i{background:var(--ink);border-radius:.5px}
 .codenum{margin-top:7px;font-size:11px;letter-spacing:.24em;font-weight:700;color:var(--ink);opacity:.6}
 
-/* ---- Rodapé ---- */
 .foot{position:relative;z-index:2;width:100%;max-width:420px}
 .btn{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
   background:var(--dark);color:#FBF7EC;font-family:var(--ui);
@@ -135,8 +135,8 @@ h1{font-weight:900;font-size:clamp(29px,8.4vw,40px);line-height:1.05;
   <span class="spark s4"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2 10 10 2-10 2-2 10-2-10-10-2 10-2z"/></svg></span>
 
   <div class="head">
-    <h1 id="title" set:html={tela10.head.titleDefault} />
-    <p class="sub" id="sub"></p>
+    <h1 id="title" set:html={tela8.head.title} />
+    <p class="sub" id="sub" set:html={tela8.head.sub} />
   </div>
 
   <div class="holder">
@@ -149,8 +149,8 @@ h1{font-weight:900;font-size:clamp(29px,8.4vw,40px);line-height:1.05;
             <path d="M8 10.5V7a4 4 0 018 0v3.5M12 15v2.5"/>
           </svg>
         </span>
-        <p class="lab" set:html={tela10.card.frontLabel} />
-        <p class="tiny" set:html={tela10.card.frontTiny} />
+        <p class="lab" set:html={tela8.card.frontLabel} />
+        <p class="tiny" set:html={tela8.card.frontTiny} />
         <div class="code"><div class="bars" id="bars1"></div><p class="codenum" id="num1">— — —</p></div>
       </div>
 
@@ -163,35 +163,25 @@ h1{font-weight:900;font-size:clamp(29px,8.4vw,40px);line-height:1.05;
   </div>
 
   <div class="foot">
-    <button class="btn" id="go">{tela10.go.default}</button>
+    <button class="btn" id="go">{tela8.go.default}</button>
     <p class="timer" id="timer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
       <span id="clock"></span>
     </p>
-    <p class="fine">{tela10.fine}</p>
+    <p class="fine">{tela8.fine}</p>
   </div>
 </div>
 
 <script>
 import { VT } from '../lib/track';
 import { prefetch } from 'astro:prefetch';
-import { tela10 } from '../config/funnel';
+import { tela8 } from '../config/funnel';
 
-/* ============================================================
-   CONFIG — a mesma da tela 9
-   'material' → libera material real, não mexe em preço
-   'desconto' → exige R$ 67 e R$ 19,90 praticados de verdade
-   ============================================================ */
-const CONDICAO = tela10.condicao;
-const JANELA_H = tela10.janelaHoras; // horas de validade, enforçadas no back-end
+const JANELA_H = tela8.janelaHoras; // horas de validade, enforçadas no back-end
 
-const sim = JSON.parse(localStorage.getItem('vt_sim') || '{}');
-const feita = !!sim.completed_at;
-
-const STEP = { step: 10, step_name: 'a_condicao' };
-VT.track('step_view', { ...STEP, sim_completed: feita, condicao: CONDICAO });
-prefetch('/11');
-prefetch('/5');
+const STEP = { step: 8, step_name: 'condicao' };
+VT.track('step_view', STEP);
+prefetch('/9-oferta');
 
 /* ---- cupom real, derivado da sessão ---- */
 function cupom() {
@@ -214,18 +204,6 @@ bars(document.getElementById('bars1')!);
 bars(document.getElementById('bars2')!);
 
 const sub = document.getElementById('sub')!, go = document.getElementById('go') as HTMLButtonElement;
-
-if (feita) {
-  sub.innerHTML = tela10.head.subFeita;
-} else {
-  document.getElementById('title')!.innerHTML = tela10.head.titleNaoFeita;
-  sub.innerHTML = tela10.head.subNaoFeita;
-  go.textContent = tela10.go.naoFeita;
-  go.addEventListener('click', () => {
-    VT.track('sim_return', STEP);
-    window.location.href = `/5?s=${VT.sid}&from=10`;
-  }, { once: true });
-}
 
 /* ---- som de prêmio, sintetizado ---- */
 let mudo = false;
@@ -252,7 +230,6 @@ function premio() {
       o.connect(g); g.connect(A.destination);
       o.start(t); o.stop(t + 0.6);
     });
-    /* brilho no fim */
     const n = A.createOscillator(), ng = A.createGain();
     n.type = 'sine'; n.frequency.setValueAtTime(1568, A.currentTime + .42);
     ng.gain.setValueAtTime(.09, A.currentTime + .42);
@@ -301,50 +278,46 @@ function confete() {
   })();
 }
 
-/* ---- revelação ---- */
-const REVEAL = tela10.revealByCondicao[CONDICAO];
-
 let resgatado = false, advanced = false;
 
-if (feita) {
-  go.addEventListener('click', () => {
-    if (resgatado) return;
-    resgatado = true;
+go.addEventListener('click', () => {
+  if (resgatado) return;
+  resgatado = true;
 
-    document.getElementById('reveal')!.innerHTML = REVEAL;
-    document.getElementById('num1')!.textContent = CODE;
-    document.getElementById('num2')!.textContent = CODE;
-    document.getElementById('card')!.classList.add('flip');
+  document.getElementById('reveal')!.innerHTML = tela8.reveal;
+  document.getElementById('num1')!.textContent = CODE;
+  document.getElementById('num2')!.textContent = CODE;
+  document.getElementById('card')!.classList.add('flip');
 
-    navigator.vibrate?.([14, 50, 26]);
-    setTimeout(premio, 420);
-    setTimeout(confete, 560);
+  navigator.vibrate?.([14, 50, 26]);
+  setTimeout(premio, 420);
+  setTimeout(confete, 560);
 
-    const ate = Date.now() + JANELA_H * 3600 * 1000;
-    localStorage.setItem('vt_cond', JSON.stringify({
-      code: CODE, tipo: CONDICAO, resgatado_em: new Date().toISOString(),
-      expira_em: new Date(ate).toISOString(),
-    }));
+  const ate = Date.now() + JANELA_H * 3600 * 1000;
+  localStorage.setItem('vt_cond', JSON.stringify({
+    code: CODE, tipo: 'desconto', pct: 62, de: 97, por: 37,
+    resgatado_em: new Date().toISOString(),
+    expira_em: new Date(ate).toISOString(),
+  }));
 
-    VT.track('condicao_resgatada', { ...STEP, code: CODE, tipo: CONDICAO });
+  VT.track('condicao_resgatada', { ...STEP, code: CODE, pct: 62 });
 
-    setTimeout(() => {
-      document.getElementById('title')!.innerHTML = tela10.afterRedeem.title;
-      sub.innerHTML = tela10.afterRedeem.sub;
-      go.innerHTML = `${tela10.go.resgatado} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>`;
-      document.getElementById('timer')!.classList.add('on');
-      relogio(ate);
-      go.onclick = () => {
-        if (advanced) return; advanced = true;
-        VT.track('step_advance', { ...STEP, code: CODE });
-        document.getElementById('stage')!.classList.add('leaving');
-        setTimeout(() => {
-          window.location.href = `/11?s=${VT.sid}`;
-        }, 400);
-      };
-    }, 1150);
-  });
-}
+  setTimeout(() => {
+    document.getElementById('title')!.innerHTML = tela8.afterRedeem.title;
+    sub.innerHTML = tela8.afterRedeem.sub;
+    go.innerHTML = `${tela8.go.resgatado} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>`;
+    document.getElementById('timer')!.classList.add('on');
+    relogio(ate);
+    go.onclick = () => {
+      if (advanced) return; advanced = true;
+      VT.track('step_advance', { ...STEP, code: CODE });
+      document.getElementById('stage')!.classList.add('leaving');
+      setTimeout(() => {
+        window.location.href = `/9-oferta?s=${VT.sid}`;
+      }, 400);
+    };
+  }, 1150);
+});
 
 function relogio(ate: number) {
   const el = document.getElementById('clock')!;
@@ -352,12 +325,12 @@ function relogio(ate: number) {
     const d = ate - Date.now();
     if (d <= 0) { el.textContent = 'condição expirada'; return; }
     const h = Math.floor(d / 3.6e6), m = Math.floor(d % 3.6e6 / 6e4), s = Math.floor(d % 6e4 / 1000);
-    el.textContent = `vale por ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    el.textContent = tela8.microTemplate(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`);
     setTimeout(t, 1000);
   })();
 }
 
-function reportExit() { if (!advanced) VT.track('step_exit', { ...STEP, resgatado, sim_completed: feita }); }
+function reportExit() { if (!advanced) VT.track('step_exit', { ...STEP, resgatado }); }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
 window.addEventListener('pagehide', reportExit);
 </script>
@@ -373,17 +346,13 @@ window.addEventListener('pagehide', reportExit);
      voltar depois de 30h e você vender pelo mesmo preço, era mentira —
      independentemente do que estava escrito aqui.
 
-  3. Em CONDICAO='desconto', R$ 67 e R$ 19,90 precisam ser praticados
-     na página avulsa por no mínimo 30 dias antes de servirem de âncora,
-     e mantidos depois. Sem isso, use 'material'.
+  3. R$ 97 precisa ser o preço real da formação completa, praticado e
+     mantido na ofertaai.shop. Sem isso, os 62% de desconto são
+     fictícios e a tela inteira vira encenação.
 
-  4. Em CONDICAO='material', o material revelado NÃO pode aparecer na
-     oferta avulsa. Se aparecer, a frase "não está na oferta avulsa"
-     é falsa e ela descobre no primeiro acesso.
-
-  O QUE FICOU DE FORA DA REFERÊNCIA, DE PROPÓSITO
-  · "Restam apenas 39 vouchers até 1.000 membros" — contador inventado
-  · 85% — exigiria preço de tabela de R$ 247, que nunca existiu
+  O QUE FICOU DE FORA, DE PROPÓSITO
+  · "Restam apenas 39 vouchers" ou qualquer contador — número inventado
+  · Número de vagas por estado — curso digital não tem estoque
   · a palavra "premiado" e o trevo: sugerem sorteio. Não há sorteio.
     Há uma troca: ela deu cinco respostas, recebe uma condição.
 */}

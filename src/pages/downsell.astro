@@ -1,0 +1,122 @@
+---
+import FunnelLayout from '../layouts/FunnelLayout.astro';
+import { downsell } from '../config/funnel';
+
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
+---
+
+<FunnelLayout title={downsell.title} fontHref={FONT_HREF}>
+<style is:global>
+/* ============================================================
+   VITALLIA V2 · /downsell — RECUPERAÇÃO
+   Disparada pela interceptação do botão voltar do Android na tela 9
+   (history.pushState + popstate) — não por exit-intent de mouse,
+   que não existe em celular, onde está quase todo o tráfego.
+
+   ⛔ NUNCA oferece a formação completa por menos de R$ 37. Se este
+   downsell desse desconto no mesmo produto, o cupom da tela 8 vira
+   piada, o R$ 37 vira preço falso, e o público aprende a abandonar
+   pra ganhar desconto. O downsell é um PRODUTO MENOR, não um desconto
+   maior — plano de entrada com duas formações, não a formação inteira
+   mais barata.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --paper:#EFEADD;
+  --paper-2:#F7F3E9;
+  --ink:#16241D;
+  --ink-dim:#5E6B60;
+  --card:#FFFFFF;
+  --card-bd:#E2DCCC;
+  --green:#2E7D52;
+  --amber:#B8802A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:linear-gradient(178deg,var(--paper-2) 0%,var(--paper) 46%)}
+.wrap{position:relative;z-index:2;max-width:520px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:calc(env(safe-area-inset-top) + 24px) 0 26px}
+
+h1{font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:clamp(28px,8vw,36px);color:var(--ink)}
+.lede{margin-top:10px;font-size:15px;line-height:1.55;color:var(--ink-dim);max-width:36ch}
+
+.plan{margin-top:22px;background:var(--card);border:1px solid var(--card-bd);border-radius:20px;padding:20px 18px}
+.plan h2{font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.02em}
+.plan ul{margin-top:15px;display:flex;flex-direction:column;gap:9px}
+.plan li{list-style:none;display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.45}
+.plan li svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--green)}
+.plan li.no{color:var(--ink-dim)}
+.plan li.no svg{color:#C08B7C}
+.plan button{margin-top:18px;width:100%;height:56px;border:0;border-radius:28px;cursor:pointer;
+  font-family:var(--ui);font-size:15.5px;font-weight:800;letter-spacing:-.01em;
+  background:var(--green);color:#fff;box-shadow:0 6px 20px rgba(46,125,82,.26)}
+
+.voltar{display:block;margin-top:16px;text-align:center;font-size:13px;color:var(--amber);
+  font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;width:100%}
+
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+</style>
+
+<div class="stage" id="stage">
+  <main>
+    <div class="wrap">
+      <h1>{downsell.headline}</h1>
+      <p class="lede">{downsell.lede}</p>
+
+      <div class="plan">
+        <h2>{downsell.planTitle}</h2>
+        <ul>
+          {downsell.includes.map(i => (
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> {i}</li>
+          ))}
+          {downsell.excludes.map(i => (
+            <li class="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg> {i}</li>
+          ))}
+        </ul>
+        <button id="checkout">{downsell.cta}</button>
+      </div>
+
+      <button class="voltar" id="voltar">{downsell.linkVoltar}</button>
+    </div>
+  </main>
+</div>
+
+<script>
+import { VT } from '../lib/track';
+import { CHECKOUT } from '../config/oferta';
+
+const STEP = { step: 0, step_name: 'downsell' };
+// 'downsell_shown' já foi disparado pela tela 9, no instante em que o
+// voltar foi interceptado — aqui só confirmamos a chegada na página.
+VT.track('step_view', STEP);
+
+document.getElementById('checkout')!.addEventListener('click', () => {
+  VT.track('downsell_taken', STEP);
+  VT.track('checkout_click', { ...STEP, plano: 'entrada' });
+
+  if (!CHECKOUT.entrada) {
+    console.log('→ checkout: CHECKOUT.entrada ainda não foi preenchido em src/config/oferta.ts');
+    return;
+  }
+  const u = new URL(CHECKOUT.entrada);
+  u.searchParams.set('sck', VT.sid);
+  console.log('→ checkout entrada:', u.toString());
+  // window.location.href = u.toString();
+});
+
+/* ⛔ volta para a oferta completa pelo preço de condição (R$ 37),
+   nunca por um valor menor — ver o porquê no comentário do topo. */
+document.getElementById('voltar')!.addEventListener('click', () => {
+  document.getElementById('stage')!.classList.add('leaving');
+  setTimeout(() => {
+    window.location.href = `/9-oferta?s=${VT.sid}`;
+  }, 350);
+});
+</script>
+</FunnelLayout>

@@ -1,0 +1,131 @@
+---
+import FunnelLayout from '../layouts/FunnelLayout.astro';
+import { tela4 } from '../config/funnel';
+
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
+---
+
+<FunnelLayout title={tela4.title} fontHref={FONT_HREF} htmlDataTheme="dark">
+<style is:global>
+/* ============================================================
+   VITALLIA V2 · Tela 4 de 9 — "A formação" (O PRODUTO)
+   Sobe de posição em relação à v1 (era a tela-11, a substância que
+   só vinha depois de dez telas de convencimento) e ganha peso: aqui
+   é onde a leitora responde "o que eu compro?".
+
+   As seis formações vêm na ordem em que ela marcou na Q4 do
+   diagnóstico primeiro — "você marcou esta" não é decoração, é o
+   diagnóstico virando personalização visível.
+
+   ⛔ O certificado é consequência, não argumento principal — não
+   abre com "6 certificados".
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg-1:#0C1A14;--bg-2:#061009;--fg:#EDE4D2;--fg-dim:#A9A392;
+  --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;
+  --card:rgba(237,228,210,.045);--card-bd:rgba(237,228,210,.11);
+  --halo:rgba(229,160,60,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:radial-gradient(120% 46% at 50% -6%,var(--halo) 0%,transparent 58%),
+             linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
+.stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.thread{position:fixed;top:0;left:0;height:2px;width:44.4%;background:var(--accent);opacity:.55;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 30px) 0 26px}
+
+.kicker{font-size:9.5px;letter-spacing:.19em;text-transform:uppercase;font-weight:700;color:var(--sage)}
+h1{margin-top:10px;font-family:var(--display);font-weight:800;
+  font-size:clamp(26px,7vw,36px);line-height:1.13;letter-spacing:-.03em;text-wrap:balance}
+.sub{margin-top:10px;font-size:13.5px;color:var(--fg-dim)}
+
+.cards{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+.card{position:relative;background:var(--card);border:1px solid var(--card-bd);border-radius:18px;padding:17px 16px}
+.card.marcada{border-color:var(--accent);background:rgba(229,160,60,.06)}
+.card .badge{display:inline-block;margin-bottom:8px;padding:3px 10px;border-radius:99px;
+  background:var(--accent);color:var(--accent-ink);font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+.card h3{font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:-.015em;line-height:1.25;color:var(--fg)}
+.card p{margin-top:7px;font-size:13.5px;line-height:1.52;color:var(--fg-dim)}
+
+.fecho{margin-top:22px;padding:15px 16px;border-radius:14px;border:1px dashed var(--card-bd);
+  font-size:13px;line-height:1.5;color:var(--fg-dim)}
+
+.foot{position:sticky;bottom:0;z-index:5;padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
+  background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
+.foot button{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--ui);font-size:16px;font-weight:700;box-shadow:0 6px 24px rgba(229,160,60,.24)}
+.foot svg{width:18px;height:18px}
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+</style>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+    <p class="kicker">{tela4.kicker}</p>
+    <h1>{tela4.headline}</h1>
+    <p class="sub">{tela4.sub}</p>
+
+    <div class="cards" id="cards"></div>
+
+    <p class="fecho">{tela4.fecho}</p>
+  </main>
+
+  <div class="wrap foot">
+    <button id="advance">
+      {tela4.cta}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+import { VT } from '../lib/track';
+import { prefetch } from 'astro:prefetch';
+import { tela4 } from '../config/funnel';
+
+const STEP = { step: 4, step_name: 'formacao' };
+
+const sim = JSON.parse(localStorage.getItem('vt_sim') || '{}');
+const areasMarcadas: string[] = sim.answers?.areas || [];
+
+VT.track('step_view', { ...STEP, areas: areasMarcadas });
+prefetch('/5-diferencial');
+
+const ordenados = [...tela4.cards].sort((a, b) => {
+  const A = areasMarcadas.includes(a.key) ? 0 : 1;
+  const B = areasMarcadas.includes(b.key) ? 0 : 1;
+  return A - B;
+});
+
+document.getElementById('cards')!.innerHTML = ordenados.map(c => {
+  const marcada = areasMarcadas.includes(c.key);
+  return `<article class="card${marcada ? ' marcada' : ''}">
+    ${marcada ? `<span class="badge">${tela4.marcadaBadge}</span>` : ''}
+    <h3>${c.titulo}</h3>
+    <p>${c.texto}</p>
+  </article>`;
+}).join('');
+
+let advanced = false;
+function reportExit() { if (!advanced) VT.track('step_exit', STEP); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
+window.addEventListener('pagehide', reportExit);
+
+document.getElementById('advance')!.addEventListener('click', () => {
+  if (advanced) return; advanced = true;
+  VT.track('step_advance', STEP);
+  document.getElementById('stage')!.classList.add('leaving');
+  setTimeout(() => {
+    window.location.href = `/5-diferencial?s=${VT.sid}`;
+  }, 420);
+});
+</script>
+</FunnelLayout>

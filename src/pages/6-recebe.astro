@@ -1,0 +1,120 @@
+---
+import FunnelLayout from '../layouts/FunnelLayout.astro';
+import { tela6 } from '../config/funnel';
+
+const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
+---
+
+<FunnelLayout title={tela6.title} fontHref={FONT_HREF} htmlDataTheme="dark">
+<style is:global>
+/* ============================================================
+   VITALLIA V2 · Tela 6 de 9 — "O que você recebe"
+   Funde o contraste da tela-09 (v1) com o "e mais" de materiais da
+   tela-11 (v1) num empilhamento só.
+
+   ⛔ Empilhamento de SUBSTÂNCIA, não de preço. Nada de "Fitoterapia
+   R$ 97 + Aromaterapia R$ 97 + total R$ 600" — esses preços nunca
+   foram praticados; seria a mesma âncora fabricada que a v1 já tinha
+   tirado da página. Números contáveis e verdadeiros impressionam
+   mais nesta compradora, que já fechou a aba de um curso de R$ 3.000
+   e tem detector de exagero calibrado.
+   ============================================================ */
+:root{
+  --display:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:"Bodoni Moda",Didot,Georgia,serif;
+  --ui:"Archivo",-apple-system,BlinkMacSystemFont,sans-serif;
+  --bg-1:#0C1A14;--bg-2:#061009;--fg:#EDE4D2;--fg-dim:#A9A392;
+  --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;
+  --card:rgba(237,228,210,.045);--card-bd:rgba(237,228,210,.11);
+  --halo:rgba(229,160,60,.15);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-smoothing:antialiased}
+.stage{position:relative;min-height:100svh;display:flex;flex-direction:column;
+  background:radial-gradient(120% 46% at 50% -6%,var(--halo) 0%,transparent 58%),
+             linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
+.stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+.thread{position:fixed;top:0;left:0;height:2px;width:66.6%;background:var(--accent);opacity:.55;z-index:9}
+.wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
+main{flex:1;padding:calc(env(safe-area-inset-top) + 30px) 0 26px}
+
+h1{font-family:var(--display);font-weight:800;
+  font-size:clamp(26px,7vw,36px);line-height:1.14;letter-spacing:-.03em;text-wrap:balance}
+
+.block{margin-top:20px;background:var(--card);border:1px solid var(--card-bd);border-radius:18px;padding:17px 16px}
+.block .kicker{font-size:9.5px;letter-spacing:.17em;text-transform:uppercase;font-weight:700;color:var(--sage);margin-bottom:9px}
+.block p.lead{font-size:14.5px;line-height:1.5;font-weight:600;color:var(--fg)}
+.block ul{margin-top:10px;display:flex;flex-direction:column;gap:9px}
+.block li{list-style:none;display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45;color:var(--fg-dim)}
+.block li svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--accent)}
+
+.foot{position:sticky;bottom:0;z-index:5;padding:16px 0 calc(env(safe-area-inset-bottom) + 14px);
+  background:linear-gradient(to top,var(--bg-2) 52%,transparent)}
+.foot button{width:100%;height:62px;border:0;border-radius:31px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:11px;
+  background:var(--accent);color:var(--accent-ink);
+  font-family:var(--ui);font-size:16px;font-weight:700;box-shadow:0 6px 24px rgba(229,160,60,.24)}
+.foot svg{width:18px;height:18px}
+.stage.leaving{opacity:0;transform:translateX(-6%);
+  transition:opacity .42s ease,transform .48s cubic-bezier(.6,0,.35,1)}
+</style>
+<i class="thread"></i>
+<div class="stage" id="stage">
+  <main class="wrap">
+    <h1>{tela6.headline}</h1>
+
+    <section class="block">
+      <p class="kicker">{tela6.formacao.kicker}</p>
+      <p class="lead">{tela6.formacao.texto}</p>
+    </section>
+
+    <section class="block">
+      <p class="kicker">{tela6.materiais.kicker}</p>
+      <ul>
+        {tela6.materiais.itens.map(item => (
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="block">
+      <p class="kicker">{tela6.comoFunciona.kicker}</p>
+      <p class="lead">{tela6.comoFunciona.texto}</p>
+    </section>
+  </main>
+
+  <div class="wrap foot">
+    <button id="advance">
+      {tela6.cta}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+import { VT } from '../lib/track';
+import { prefetch } from 'astro:prefetch';
+
+const STEP = { step: 6, step_name: 'recebe' };
+VT.track('step_view', STEP);
+prefetch('/7-prova');
+
+let advanced = false;
+function reportExit() { if (!advanced) VT.track('step_exit', STEP); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
+window.addEventListener('pagehide', reportExit);
+
+document.getElementById('advance')!.addEventListener('click', () => {
+  if (advanced) return; advanced = true;
+  VT.track('step_advance', STEP);
+  document.getElementById('stage')!.classList.add('leaving');
+  setTimeout(() => {
+    window.location.href = `/7-prova?s=${VT.sid}`;
+  }, 420);
+});
+</script>
+</FunnelLayout>

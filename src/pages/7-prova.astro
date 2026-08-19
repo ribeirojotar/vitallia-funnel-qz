@@ -1,25 +1,22 @@
 ---
 import FunnelLayout from '../layouts/FunnelLayout.astro';
-import { tela06 } from '../config/funnel';
+import { tela7 } from '../config/funnel';
 
 const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@1,6..96,500&display=swap';
 ---
 
-<FunnelLayout title={tela06.title} fontHref={FONT_HREF} htmlDataTheme="dark">
+<FunnelLayout title={tela7.title} fontHref={FONT_HREF} htmlDataTheme="dark">
 <style is:global>
 /* ============================================================
-   VITALLIA · Tela 6 de 12 — "Isso é sério?"
-   Trabalho: PROVA. E aqui a nossa é estruturalmente melhor que a
-   da referência, porque a dela é depoimento e a nossa é auditável.
+   VITALLIA V2 · Tela 7 de 9 — "Isso é sério?"
+   Herdada quase inteira de tela-06-isso-e-serio (v1), com duas
+   mudanças:
+   1. O bloco longo sobre MEC/conselho saiu daqui — vira uma linha
+      só, e a defesa completa migra para o FAQ da tela 9.
+   2. Ordem: validador ao vivo → trecho de aula → página do caderno
+      → base legal curta.
 
-   Ordem interna deliberada:
-   1. validador ao vivo   → prova que ela mesma executa
-   2. conteúdo             → prova que ela mesma vê
-   3. base legal           → prova que ela pode conferir
-   4. a verdade completa   → a arma
-   5. [PROVA NECESSÁRIA]   → depoimento, quando existir
-
-   O validador vem primeiro porque é a única em que ELA age.
+   O validador vem primeiro porque é a única prova em que ELA age.
    Prova que o leitor executa vale mais que prova que ele lê.
    ============================================================ */
 :root{
@@ -30,7 +27,6 @@ const FONT_HREF = 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;500
   --accent:#E5A03C;--accent-ink:#3A2408;--sage:#7C9481;--ok:#7FBF8C;
   --card:rgba(237,228,210,.045);--card-bd:rgba(237,228,210,.11);
   --slab:#04100A;--slab-bd:rgba(237,228,210,.09);
-  --note-bg:rgba(229,160,60,.09);--note-bd:rgba(229,160,60,.30);--note-fg:#F0BE72;
   --halo:rgba(229,160,60,.15);
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -40,7 +36,7 @@ body{background:var(--bg-2);color:var(--fg);font-family:var(--ui);-webkit-font-s
              linear-gradient(178deg,var(--bg-1) 0%,var(--bg-2) 100%)}
 .stage::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.28;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
-.thread{position:fixed;top:0;left:0;height:2px;width:50%;background:var(--accent);opacity:.55;z-index:9}
+.thread{position:fixed;top:0;left:0;height:2px;width:77.7%;background:var(--accent);opacity:.55;z-index:9}
 .wrap{position:relative;z-index:2;max-width:560px;width:100%;margin:0 auto;padding:0 20px}
 main{flex:1;padding:calc(env(safe-area-inset-top) + 30px) 0 26px}
 
@@ -93,20 +89,10 @@ h1 em{font-style:normal;color:var(--accent)}
 .pair{display:grid;gap:10px}
 @media(min-width:520px){.pair{grid-template-columns:1fr 1fr}}
 
-/* ---- Base legal ---- */
-.legalbox{background:var(--card);border:1px solid var(--card-bd);border-radius:18px;padding:17px}
-.legalbox p{font-size:13.5px;line-height:1.58;color:var(--fg-dim)}
-.legalbox p + p{margin-top:9px}
-.legalbox b{color:var(--fg);font-weight:700}
-.legalbox a{color:var(--sage);text-decoration:underline;text-underline-offset:2px}
-
-/* ---- A arma ---- */
-.truth{margin-top:26px;padding:19px 18px;border-radius:18px;
-  background:var(--note-bg);border:1px solid var(--note-bd);color:var(--note-fg)}
-.truth h3{font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:-.02em;margin-bottom:11px}
-.truth p{font-size:13.5px;line-height:1.58;font-weight:500}
-.truth p + p{margin-top:9px}
-.truth b{font-weight:700}
+/* ---- Base legal curta ---- */
+.legalcurta{margin-top:20px;padding:14px 16px;border-radius:14px;
+  background:var(--card);border:1px solid var(--card-bd);
+  font-size:13px;line-height:1.5;color:var(--fg-dim);text-align:center}
 
 /* ---- Prova que falta ---- */
 .pending{margin-top:16px;padding:15px 16px;border-radius:16px;border:1px dashed var(--card-bd);
@@ -129,29 +115,29 @@ h1 em{font-style:normal;color:var(--accent)}
 <div class="stage" id="stage">
   <main class="wrap">
 
-    <p class="echo">{tela06.echo}</p>
-    <h1 set:html={tela06.headline} />
-    <p class="lede">{tela06.lede}</p>
+    <p class="echo">{tela7.echo}</p>
+    <h1 set:html={tela7.headline} />
+    <p class="lede">{tela7.lede}</p>
 
     {/* 1. a prova que ELA executa */}
     <section class="block">
-      <div class="tag"><i>{tela06.blocks.validador.tagNumber}</i><span>{tela06.blocks.validador.tagLabel}</span></div>
+      <div class="tag"><i>{tela7.blocks.validador.tagNumber}</i><span>{tela7.blocks.validador.tagLabel}</span></div>
       <div class="val">
-        <p class="q">{tela06.blocks.validador.question}</p>
-        <p class="hint">{tela06.blocks.validador.hint}</p>
+        <p class="q">{tela7.blocks.validador.question}</p>
+        <p class="hint">{tela7.blocks.validador.hint}</p>
         <div class="row">
           <input id="code" placeholder="VTL-DEMO-0001" autocomplete="off" spellcheck="false" aria-label="Código do certificado">
-          <button id="check">{tela06.blocks.validador.buttonLabel}</button>
+          <button id="check">{tela7.blocks.validador.buttonLabel}</button>
         </div>
         <div class="out" id="out"><div class="inner" id="inner"></div></div>
       </div>
     </section>
 
-    {/* 2. a prova que ela vê */}
+    {/* 2. a prova que ela vê — trecho de aula + página do caderno */}
     <section class="block">
-      <div class="tag"><i>{tela06.blocks.midia.tagNumber}</i><span>{tela06.blocks.midia.tagLabel}</span></div>
+      <div class="tag"><i>{tela7.blocks.midia.tagNumber}</i><span>{tela7.blocks.midia.tagLabel}</span></div>
       <div class="pair">
-        {tela06.blocks.midia.items.map(item => (
+        {tela7.blocks.midia.items.map(item => (
           <div class="media">
             <div class="slot"><span set:html={item.slot} /></div>
             <p>{item.caption}</p>
@@ -160,40 +146,29 @@ h1 em{font-style:normal;color:var(--accent)}
       </div>
     </section>
 
-    {/* 3. a prova que ela pode checar */}
-    <section class="block">
-      <div class="tag"><i>{tela06.blocks.legal.tagNumber}</i><span>{tela06.blocks.legal.tagLabel}</span></div>
-      <div class="legalbox">
-        {tela06.blocks.legal.paragraphs.map(p => <p set:html={p} />)}
-      </div>
-    </section>
+    {/* 3. base legal curta — a defesa completa do MEC mora no FAQ da tela 9 */}
+    <p class="legalcurta">{tela7.legalCurta}</p>
 
-    {/* 4. a arma */}
-    <aside class="truth">
-      <h3>{tela06.truth.heading}</h3>
-      {tela06.truth.paragraphs.map(p => <p set:html={p} />)}
-    </aside>
-
-    <p class="pending" set:html={tela06.pending} />
+    <p class="pending" set:html={tela7.pending} />
 
   </main>
 
   <div class="wrap foot">
-    <button id="advance">{tela06.cta}
+    <button id="advance">{tela7.cta}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
     </button>
-    <p class="fine">{tela06.fine}</p>
+    <p class="fine">{tela7.fine}</p>
   </div>
 </div>
 
 <script>
 import { VT } from '../lib/track';
 import { prefetch } from 'astro:prefetch';
-import { tela06 } from '../config/funnel';
+import { tela7 } from '../config/funnel';
 
-const STEP = { step: 6, step_name: 'isso_e_serio' };
+const STEP = { step: 7, step_name: 'prova' };
 VT.track('step_view', STEP);
-prefetch('/7');
+prefetch('/8-condicao');
 let advanced = false, validated = false;
 
 /* ---- Validador ----
@@ -201,7 +176,7 @@ let advanced = false, validated = false;
    O código de demonstração precisa existir de verdade no banco
    e a página pública precisa retornar o mesmo resultado. Se o
    validador do funil e o do site divergirem, a prova vira defeito. */
-const DEMO = tela06.demo;
+const DEMO = tela7.demo;
 
 const out = document.getElementById('out')!, inner = document.getElementById('inner')!;
 const input = document.getElementById('code') as HTMLInputElement, btn = document.getElementById('check')!;
@@ -214,7 +189,7 @@ btn.addEventListener('click', () => {
   inner.innerHTML = ok ? `
     <div class="stamp">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-      ${tela06.validator.validTitle}
+      ${tela7.validator.validTitle}
     </div>
     <dl>
       <dt>Curso</dt><dd>${DEMO.curso}</dd>
@@ -222,23 +197,18 @@ btn.addEventListener('click', () => {
       <dt>Código</dt><dd>${DEMO.code}</dd>
       <dt>Emissão</dt><dd>${DEMO.emissao}</dd>
     </dl>
-    <p class="demo">${tela06.validator.validNote}</p>`
+    <p class="demo">${tela7.validator.validNote}</p>`
   : `
     <div class="stamp">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      ${tela06.validator.invalidTitle}
+      ${tela7.validator.invalidTitle}
     </div>
-    <p class="demo">${tela06.validator.invalidNoteTemplate(DEMO.code)}</p>`;
+    <p class="demo">${tela7.validator.invalidNoteTemplate(DEMO.code)}</p>`;
 
   out.classList.toggle('err', !ok);
   out.classList.add('on');
 });
 input.addEventListener('keydown', e => { if (e.key === 'Enter') (btn as HTMLButtonElement).click(); });
-
-document.getElementById('src')?.addEventListener('click', e => {
-  e.preventDefault(); VT.track('source_click', STEP);
-  // window.open('URL_DO_MEMENTO','_blank','noopener');
-});
 
 function reportExit() { if (!advanced) VT.track('step_exit', { ...STEP, validated }); }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') reportExit(); });
@@ -249,17 +219,12 @@ document.getElementById('advance')!.addEventListener('click', () => {
   VT.track('step_advance', { ...STEP, validated });
   document.getElementById('stage')!.classList.add('leaving');
   setTimeout(() => {
-    window.location.href = `/7?s=${VT.sid}`;
+    window.location.href = `/8-condicao?s=${VT.sid}`;
   }, 420);
 });
 </script>
 
 {/*
-  ENCADEAMENTO: a linha de eco da TELA 7 precisa ser trocada.
-  Hoje ela retoma "falta menos do que parece", que é da tela 5.
-  Com a 6 no meio, a 7 deve retomar daqui — algo como
-  "Quem te prometer mais que isso está mentindo."
-
   POR QUE O VALIDADOR VEM PRIMEIRO
   É a única prova em que ELA age. Prova que o leitor executa vale mais
   que prova que o leitor lê, porque o resultado aparece por causa de um
@@ -269,5 +234,12 @@ document.getElementById('advance')!.addEventListener('click', () => {
   No banco e na página pública de validação. Se o validador do funil
   responder e o do site não, a prova mais forte da oferta vira o
   defeito mais caro dela.
+
+  V2 — POR QUE O MEC SAIU DAQUI
+  A defesa completa (nenhum curso dá registro, nenhum curso livre é
+  reconhecido pelo MEC etc.) mora agora no FAQ da tela 9. Espalhar
+  essa defesa por várias telas, como a v1 fazia, ocupava três telas
+  inteiras e matava a energia da oferta — aqui vira uma linha, e a
+  defesa completa só aparece pra quem clica a pergunta no FAQ.
 */}
 </FunnelLayout>
